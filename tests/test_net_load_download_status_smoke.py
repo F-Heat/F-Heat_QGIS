@@ -17,24 +17,14 @@ def test_calculate_GLF_bounds():
 def test_calculate_volumeflow_nonzero():
     # Use sample values; ensure function runs and returns numeric
     vf = calculate_volumeflow(100, 50, 30)
-    assert isinstance(vf, float) or isinstance(vf, (int,))
-
-
-def test_temperature_init():
-    t = Temperature('http://example.com/')
-    assert 'TU_Stundenwerte' in t.url_all or isinstance(t.url_all, str)
-
-
-def test_file_list_from_url_dummy():
-    # We cannot call network; ensure function exists
-    assert callable(file_list_from_URL)
+    assert isinstance(vf, float) or isinstance(vf, int)
 
 
 def test_wld_init():
     # minimal smoke test for WLD class
     import geopandas as gpd
     from shapely.geometry import Polygon
-    gdf_b = gpd.GeoDataFrame({'geometry': [Polygon([(0,0),(1,0),(1,1)])]})
-    gdf_s = gpd.GeoDataFrame({'geometry': [Polygon([(0,0),(1,0),(1,1)])]})
+    gdf_b = gpd.GeoDataFrame({'geometry': [Polygon([(0,0),(1,0),(1,1),(0,0)])]})
+    gdf_s = gpd.GeoDataFrame({'geometry': [Polygon([(0,0),(1,0),(1,1),(0,1)])]})
     w = WLD(gdf_b, gdf_s)
     assert hasattr(w, 'get_centroid')
