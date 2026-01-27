@@ -60,7 +60,9 @@ All necessary steps are documented within the plugin. A detailed documentation a
 
 [F|Heat ReadtheDocs](https://f-heat-qgis.readthedocs.io/en/latest)
 
-[Official german website](https://www.fh-muenster.de/de/fheat/index)
+[Official german website](https://www.fh-muenster.de/de/iep/fheat/index)
+
+[QGIS plugin store](https://plugins.qgis.org/plugins/FHeat_QGIS/)
 
 ## Contributing
 
