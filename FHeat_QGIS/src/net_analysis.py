@@ -1,12 +1,37 @@
 import geopandas as gpd
 import pandas as pd
 import numpy as np
-from shapely.geometry import Point, LineString
+from shapely.geometry import Point, LineString, MultiLineString
 import networkx as nx
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
 import sys
 import os
+
+
+def _line_parts(geometry):
+    '''
+    Return all LineString parts of a geometry.
+
+    Parameters
+    ----------
+    geometry : shapely geometry
+        Input geometry that may be a LineString or multi-part line geometry.
+
+    Returns
+    -------
+    list[LineString]
+        List of LineString geometries.
+    '''
+    if geometry is None or geometry.is_empty:
+        return []
+    if isinstance(geometry, LineString):
+        return [geometry]
+    if isinstance(geometry, MultiLineString):
+        return [part for part in geometry.geoms if isinstance(part, LineString)]
+    if hasattr(geometry, 'geoms'):
+        return [part for part in geometry.geoms if isinstance(part, LineString)]
+    return []
 
 def get_closest_point(line, point):
     '''
@@ -182,24 +207,37 @@ class Streets:
                 if not pd.isna(street_id):
                     anschlusspunkt = row['Anschlusspunkt']
                     line = self.gdf['geometry'][street_id]
-                    line_coords = list(line.coords)
+                    line_parts = _line_parts(line)
 
                     insertion_position = None
                     min_distance = float('inf')
+                    selected_part_idx = None
 
-                    # Find insertion position in the line
-                    for i in range(1, len(line_coords)):
-                        segment = LineString([line_coords[i-1], line_coords[i]])
-                        distance = segment.distance(anschlusspunkt)
+                    # Find insertion position in the closest line part
+                    for part_idx, part in enumerate(line_parts):
+                        line_coords = list(part.coords)
+                        for i in range(1, len(line_coords)):
+                            segment = LineString([line_coords[i-1], line_coords[i]])
+                            distance = segment.distance(anschlusspunkt)
 
-                        if distance < min_distance:
-                            min_distance = distance
-                            insertion_position = i
+                            if distance < min_distance:
+                                min_distance = distance
+                                insertion_position = i
+                                selected_part_idx = part_idx
 
-                    # Insert the connection point into the line coordinates
-                    if (anschlusspunkt.x, anschlusspunkt.y) not in line_coords:
-                        line_coords.insert(insertion_position, (anschlusspunkt.x, anschlusspunkt.y))
-                        self.gdf.at[street_id, 'geometry'] = LineString(line_coords)
+                    # Insert the connection point into the selected line part
+                    if selected_part_idx is not None:
+                        selected_part = line_parts[selected_part_idx]
+                        selected_coords = list(selected_part.coords)
+
+                        if (anschlusspunkt.x, anschlusspunkt.y) not in selected_coords:
+                            selected_coords.insert(insertion_position, (anschlusspunkt.x, anschlusspunkt.y))
+                            line_parts[selected_part_idx] = LineString(selected_coords)
+
+                            if len(line_parts) == 1:
+                                self.gdf.at[street_id, 'geometry'] = line_parts[0]
+                            else:
+                                self.gdf.at[street_id, 'geometry'] = MultiLineString(line_parts)
 
 class Source:
     '''
@@ -247,26 +285,28 @@ class Source:
             # Initialize variables for minimum distance and closest point
             min_distance = float('inf')
             closest_point = None
+            closest_street_id = None
             source = row_s['geometry']
 
             # Iterate over each line in the street network
             for idx,row in streets.iterrows():
-                line_coords = list(row['geometry'].coords)  # List of points that make up the line
-                
-                # Iterate over each line segment to find the closest point
-                for i in range(1, len(line_coords)):
-                    start_point = Point(line_coords[i-1])
-                    end_point = Point(line_coords[i])
-                    line_segment = LineString([start_point, end_point])
+                for line_part in _line_parts(row['geometry']):
+                    line_coords = list(line_part.coords)  # List of points that make up the line
 
-                    distance = line_segment.distance(source)
+                    # Iterate over each line segment to find the closest point
+                    for i in range(1, len(line_coords)):
+                        start_point = Point(line_coords[i-1])
+                        end_point = Point(line_coords[i])
+                        line_segment = LineString([start_point, end_point])
 
-                    if distance < min_distance:
-                        min_distance = distance
-                        closest_point = get_closest_point(LineString([start_point, end_point]), source)
-                        id = idx
+                        distance = line_segment.distance(source)
+
+                        if distance < min_distance:
+                            min_distance = distance
+                            closest_point = get_closest_point(LineString([start_point, end_point]), source)
+                            closest_street_id = idx
             self.gdf.at[index, 'Anschlusspunkt'] = closest_point
-            self.gdf.at[index, 'street_id'] = int(id)
+            self.gdf.at[index, 'street_id'] = int(closest_street_id) if closest_street_id is not None else np.nan
 
 class Buildings:
     '''
@@ -412,17 +452,18 @@ class Graph:
         # Add nodes and edges
         for idx, row in streets.iterrows():
             geom = row['geometry']
-            line_coords = list(geom.coords)
+            for line_part in _line_parts(geom):
+                line_coords = list(line_part.coords)
 
-            # Iterate over each point on the line
-            for i in range(len(line_coords)):
-                node = line_coords[i]
-                self.graph.add_node(node)
+                # Iterate over each point on the line
+                for i in range(len(line_coords)):
+                    node = line_coords[i]
+                    self.graph.add_node(node)
 
-                # Connect point to previous point
-                if i > 0:
-                    prev_node = line_coords[i-1]
-                    self.graph.add_edge(node, prev_node,**edge_data)
+                    # Connect point to previous point
+                    if i > 0:
+                        prev_node = line_coords[i-1]
+                        self.graph.add_edge(node, prev_node,**edge_data)
     
     def connect_centroids(self, buildings):
         '''

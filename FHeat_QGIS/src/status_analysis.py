@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import geopandas as gpd
 
 class WLD:
@@ -157,7 +158,7 @@ class Polygons:
         connected_building_ids = [int(id) for sublist in filtered_wld['connected'].dropna().str.split(',').tolist() if isinstance(sublist, list) for id in sublist]
 
         # Select buildings that are in the list of connected building IDs
-        connected_buildings = self.buildings[self.buildings['new_ID'].isin(connected_building_ids)]
+        connected_buildings = self.buildings[self.buildings['new_ID'].isin(connected_building_ids)].copy()
 
         # Calculate area of building footprint
         connected_buildings['building_area'] = connected_buildings.geometry.area
@@ -180,19 +181,82 @@ class Polygons:
         join_result = gpd.sjoin(self.parcels, connected_buildings, how="inner", predicate="intersects")
 
         # Calculate area of overlap between parcels and buildings
-        join_result['overlap_area'] = join_result.apply(lambda row: self.parcels.geometry.iloc[row.name].intersection(connected_buildings.geometry.iloc[row['index_right']]).area, axis=1)
+        if join_result.empty:
+            join_result['overlap_area'] = 0.0
+        else:
+            join_result = join_result.dropna(subset=['index_right']).copy()
+            join_result['index_right'] = join_result['index_right'].astype(int)
+            join_result['overlap_area'] = join_result.apply(
+                lambda row: self.parcels.geometry.loc[row.name].intersection(
+                    connected_buildings.geometry.loc[row['index_right']]
+                ).area,
+                axis=1,
+            )
         
         # Calculate coverage ratio
         join_result['coverage_ratio'] = join_result['overlap_area'] / join_result['building_area']
-        
-        # Sort by coverage_ratio
+
+        # Sort by coverage_ratio descending
         sorted_joined = join_result.sort_values(by='coverage_ratio', ascending=False)
 
-        # Keep only the row of a parcel with the max. 
-        max_coverage = sorted_joined.groupby(sorted_joined.index).first()
-        
-        # Select parcels where the coverage ratio exceeds the threshold
-        selected_parcels = max_coverage[max_coverage['coverage_ratio'] >= 0.1]
+        # --- Primary: parcel-centric selection (>= 10 % footprint coverage) ---
+        max_coverage_by_parcel = sorted_joined.groupby(sorted_joined.index).first()
+        selected_by_parcel = max_coverage_by_parcel[max_coverage_by_parcel['coverage_ratio'] >= 0.1]
+
+        # --- Fallback: centroid-based selection for buildings not yet represented ---
+        # MultiPolygon buildings that span parcel boundaries never achieve >= 10 % per parcel.
+        # Use the building centroid to identify the containing parcel and add that row directly,
+        # without any coverage threshold.  Downstream dissolve() merges duplicate parcel geometries.
+        already_covered_ids = set(selected_by_parcel['new_ID'].dropna())
+        missing_ids = set(connected_buildings['new_ID']) - already_covered_ids
+
+        fallback_rows = gpd.GeoDataFrame()
+        if missing_ids and 'centroid' in self.buildings.columns:
+            missing_buildings = connected_buildings[connected_buildings['new_ID'].isin(missing_ids)].copy()
+            centroids_gdf = missing_buildings.set_geometry('centroid')
+
+            # Find which parcel each missing building's centroid falls within
+            centroid_join = gpd.sjoin(
+                centroids_gdf[[centroids_gdf.geometry.name, 'new_ID']],
+                self.parcels[['geometry', 'identifier']],
+                how='left',
+                predicate='within',
+            )
+            centroid_join = centroid_join[centroid_join['index_right'].notna()]
+
+            # For each missing building pick the row from join_result with the
+            # best matching parcel (centroid-parcel preferred, else highest coverage)
+            centroid_parcel_map = (
+                centroid_join.drop_duplicates(subset='new_ID', keep='first')[['new_ID', 'index_right']]
+                .set_index('new_ID')['index_right']
+                .astype(int)
+                .to_dict()
+            )
+
+            collected = []
+            for bid, parcel_idx in centroid_parcel_map.items():
+                # Prefer the row from join_result where new_ID == bid and parcel == parcel_idx
+                mask = (join_result['new_ID'] == bid) & (join_result.index == parcel_idx)
+                candidate = join_result[mask]
+                if candidate.empty:
+                    # Fall back to any row for this building (highest coverage)
+                    candidate = sorted_joined[sorted_joined['new_ID'] == bid].head(1)
+                else:
+                    candidate = candidate.head(1)
+                collected.append(candidate)
+
+            if collected:
+                fallback_rows = gpd.GeoDataFrame(pd.concat(collected))
+                # Ensure CRS matches the main selection
+                if fallback_rows.crs is None and not selected_by_parcel.empty:
+                    fallback_rows = fallback_rows.set_crs(selected_by_parcel.crs)
+
+        # Combine: allow same parcel to appear multiple times for different buildings.
+        # Downstream buffer_dissolve_and_explode uses only geometry, so duplicates are fine.
+        if not fallback_rows.empty:
+            selected_parcels = gpd.GeoDataFrame(pd.concat([selected_by_parcel, fallback_rows]))
+        else:
+            selected_parcels = selected_by_parcel
 
         # Remove 'centroid' column
         if 'centroid' in selected_parcels.columns:

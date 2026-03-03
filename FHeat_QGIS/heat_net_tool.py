@@ -45,6 +45,7 @@ try:
     from .src.download_files import file_list_from_URL, search_filename, read_file_from_zip, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
     from .src.adjust_files import Streets_adj, Buildings_adj, Parcels_adj, spatial_join
     from .src.status_analysis import WLD, Polygons
+    from .src.street_block_analysis import StreetBlockPolygons
     from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
     from .src.load_curve import Temperature, LoadProfile
     from workalendar.europe import Germany
@@ -329,6 +330,7 @@ class HeatNetTool:
         from .src.download_files import file_list_from_URL, search_filename, read_file_from_zip, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
         from .src.adjust_files import Streets_adj, Buildings_adj, Parcels_adj, spatial_join
         from .src.status_analysis import WLD, Polygons
+        from .src.street_block_analysis import StreetBlockPolygons
         from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
         from .src.load_curve import Temperature, LoadProfile
         from workalendar.europe import Germany
@@ -1218,13 +1220,97 @@ class HeatNetTool:
         wld.rename_columns()
         polygons.rename_columns()
 
+        # Deduplicate columns (can occur when input data already contains processed columns from a previous run)
+        wld_streets = wld.streets
+        wld_streets = wld_streets.loc[:, ~wld_streets.columns.duplicated()]
+        pol_polygons = polygons.polygons
+        pol_polygons = pol_polygons.loc[:, ~pol_polygons.columns.duplicated()]
+
         # save gdfs as instance attributes
-        self.wld = wld.streets
-        self.polygons = polygons.polygons
+        self.wld = wld_streets
+        self.polygons = pol_polygons
 
         # Set status as complete
         self.status_analysis_status = 'complete'
-    
+
+    def street_block_analysis(self, progress_update, label_update):
+        '''
+        Groups all buildings by surrounding street blocks and creates heat-density
+        polygons for each block.
+
+        Unlike the WLD-based status analysis, this method does NOT filter buildings
+        by a heat line density threshold. Every building is included regardless of
+        which street it is assigned to. Buildings are grouped by the polygon formed
+        by their enclosing street ring (street block). Parcels are selected using the
+        same two-stage strategy (footprint >= 10 % / centroid fallback) used by the
+        standard status analysis.
+
+        The same input layers (Streets, Parcels, Buildings) and attribute selections
+        (Heat Demand, Power_th) from the Status Analysis tab are used.
+
+        Returns
+        -------
+        None
+        '''
+        progress_update.emit(0)
+        self.street_block_status = 0
+        label_update.emit(self.tr('Calculating street blocks...'), 'white')
+
+        # Layer paths – shared with the standard status analysis combo boxes
+        streets_path, _, _ = self.get_layer_path_from_combobox(self.dlg.status_comboBox_streets)
+        parcels_path, _, _ = self.get_layer_path_from_combobox(self.dlg.status_comboBox_parcels)
+        buildings_path, _, _ = self.get_layer_path_from_combobox(self.dlg.status_comboBox_buildings)
+
+        heat_attribute = self.dlg.status_comboBox_heat.currentText()
+        power_attribute = self.dlg.status_comboBox_power.currentText()
+
+        if heat_attribute == self.tr('Select Attribute'):
+            label_update.emit(self.tr('Please select an Attribute as heat demand.'), 'orange')
+            return
+        if power_attribute == self.tr('Select Attribute'):
+            label_update.emit(self.tr('Please select an Attribute as thermal power.'), 'orange')
+            return
+        if self.dlg.status_lineEdit_blocks.text().strip() == '':
+            label_update.emit(self.tr('Specify a file path for the street blocks output'), 'orange')
+            return
+
+        progress_update.emit(5)
+
+        streets = gpd.read_file(streets_path)
+        parcels = gpd.read_file(parcels_path)
+        buildings = gpd.read_file(buildings_path)
+
+        progress_update.emit(10)
+
+        sbp = StreetBlockPolygons(buildings, streets, parcels)
+
+        label_update.emit(self.tr('Computing centroids and street blocks...'), 'white')
+        sbp.get_centroid()
+        progress_update.emit(20)
+        sbp.create_street_blocks()
+        progress_update.emit(35)
+        sbp.assign_buildings_to_blocks()
+        progress_update.emit(50)
+
+        label_update.emit(self.tr('Selecting parcels...'), 'white')
+        sbp.select_parcels_for_all_buildings()
+        progress_update.emit(65)
+        sbp.buffer_dissolve_and_explode(0.5)
+        progress_update.emit(75)
+
+        label_update.emit(self.tr('Adding attributes...'), 'white')
+        sbp.add_attributes(heat_attribute, power_attribute)
+        progress_update.emit(90)
+
+        sbp.rename_columns()
+
+        # Deduplicate columns (safety net for repeated runs)
+        result = sbp.polygons
+        result = result.loc[:, ~result.columns.duplicated()]
+        self.street_block_polygons = result
+
+        self.street_block_status = 'complete'
+
     def network_analysis(self, progress_update, label_update):
         '''
         Conduct a network analysis for a district heating system, including setup, data loading,
@@ -1887,7 +1973,9 @@ class HeatNetTool:
                 # path from lineEdit
                 polygon_path = self.dlg.status_lineEdit_polygons.text()
 
-                # save shapefiles
+                # save shapefiles (deduplicate columns as safety net)
+                self.wld = self.wld.loc[:, ~self.wld.columns.duplicated()]
+                self.polygons = self.polygons.loc[:, ~self.polygons.columns.duplicated()]
                 self.wld.to_file(streets_path)
                 self.polygons.to_file(polygon_path)
 
@@ -1905,7 +1993,39 @@ class HeatNetTool:
             
         self.worker_running = True
         self.run_long_task(self.status_analysis, gui_elements, on_task_finished)
-    
+
+    def start_street_block_analysis(self):
+        '''Starts the street-block-based polygon analysis in a background thread.'''
+        if self.worker_running:
+            QMessageBox.warning(
+                self.dlg,
+                self.tr('Warning'),
+                self.tr('A process is already running. Please wait for completion to start a new process.'),
+            )
+            return
+
+        gui_elements = {
+            'progressBar': self.dlg.status_progressBar,
+            'label': self.dlg.status_label_response,
+        }
+
+        def on_task_finished():
+            if self.street_block_status == 'complete':
+                blocks_path = self.dlg.status_lineEdit_blocks.text()
+
+                # Save and add to project
+                self.street_block_polygons.to_file(blocks_path)
+                self.add_shapefile_to_project(blocks_path, 'polygons', self.tr('Heat Density'))
+
+                self.dlg.status_progressBar.setValue(100)
+                self.dlg.status_label_response.setStyleSheet('color: rgb(0, 255, 0)')
+                self.dlg.status_label_response.setText(self.tr('Completed!'))
+
+            self.worker_running = False
+
+        self.worker_running = True
+        self.run_long_task(self.street_block_analysis, gui_elements, on_task_finished)
+
     def start_network_analysis(self):
         # check if another process is already running
         if self.worker_running == True:
@@ -2051,6 +2171,7 @@ class HeatNetTool:
                 from .src.download_files import file_list_from_URL, search_filename, read_file_from_zip, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
                 from .src.adjust_files import Streets_adj, Buildings_adj, Parcels_adj, spatial_join
                 from .src.status_analysis import WLD, Polygons
+                from .src.street_block_analysis import StreetBlockPolygons
                 from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
                 from .src.load_curve import Temperature, LoadProfile
                 from workalendar.europe import Germany
@@ -2114,6 +2235,13 @@ class HeatNetTool:
             
             # start status analysis
             self.dlg.status_pushButton_start.clicked.connect(self.start_status_analysis)
+
+            # street blocks output path
+            self.dlg.status_pushButton_blocks.clicked.connect(
+                lambda: self.select_output_file(self.project_dir, self.dlg.status_lineEdit_blocks, '*.gpkg;;*.shp'))
+
+            # start street block analysis
+            self.dlg.status_pushButton_start_blocks.clicked.connect(self.start_street_block_analysis)
 
             ### Net ###
 
