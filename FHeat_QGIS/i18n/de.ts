@@ -9,7 +9,7 @@
         <translation>Layer auswählen</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1573"/>
+        <location filename="../heat_net_tool.py" line="1570"/>
         <source>Select Attribute</source>
         <translation>Attribut auswählen</translation>
     </message>
@@ -44,22 +44,22 @@
         <translation>Eingabedatei wählen</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1936"/>
+        <location filename="../heat_net_tool.py" line="1940"/>
         <source>Net</source>
         <translation>Netz</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1896"/>
+        <location filename="../heat_net_tool.py" line="1900"/>
         <source>Heat Density</source>
         <translation>Wärmedichte</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1858"/>
+        <location filename="../heat_net_tool.py" line="1860"/>
         <source>Adjusted Files</source>
         <translation>Angepasste Daten</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1771"/>
+        <location filename="../heat_net_tool.py" line="1770"/>
         <source>Basic Data</source>
         <translation>Rohdaten</translation>
     </message>
@@ -118,12 +118,12 @@ Flurstücke unvollständig</translation>
         <translation>Laden...</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1589"/>
+        <location filename="../heat_net_tool.py" line="1586"/>
         <source>Calculating...</source>
         <translation>Berechnen...</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1571"/>
+        <location filename="../heat_net_tool.py" line="1568"/>
         <source>Please select an Attribute as heat demand.</source>
         <translation>Bitte Attribut für Wärmebedarf wählen.</translation>
     </message>
@@ -138,7 +138,7 @@ Flurstücke unvollständig</translation>
         <translation>Die Gebäude sind bereits angepasst!</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1574"/>
+        <location filename="../heat_net_tool.py" line="1571"/>
         <source>Please select an Attribute as thermal power.</source>
         <translation>Bitte Attribut für thermische Leistung wählen.</translation>
     </message>
@@ -153,64 +153,64 @@ Flurstücke unvollständig</translation>
         <translation>Die Rücklauftemperatur muss geringer als die Vorlauftemperatur sein!</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1578"/>
+        <location filename="../heat_net_tool.py" line="1575"/>
         <source>Specify a file path for the net shapefile output</source>
         <translation>Geben Sie einen Dateipfad für die Wärmenetz-Shapefile an</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1581"/>
+        <location filename="../heat_net_tool.py" line="1578"/>
         <source>Specify a file path for the result file</source>
         <translation>Geben Sie einen Dateipfad für die Ergebnisdatei an</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1551"/>
+        <location filename="../heat_net_tool.py" line="1548"/>
         <source>This QGIS project has no valid directory!
 Please save the project.</source>
         <translation>Dieses QGIS-Projekt hat kein gültiges Verzeichnis!
 Bitte speichern Sie das Projekt.</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1619"/>
+        <location filename="../heat_net_tool.py" line="1616"/>
         <source>Excel result file is already open. Please close the result file to save new result.</source>
         <translation>Die Ergebnistabelle ist in Excel geöffnet. Bitte schließen Sie die Tabelle, um ein neues Ergebnis zu speichern.</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1956"/>
+        <location filename="../heat_net_tool.py" line="1958"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1956"/>
+        <location filename="../heat_net_tool.py" line="1958"/>
         <source>A process is already running. Please wait for completion to start a new process.</source>
         <translation>Es läuft bereits ein Prozess. Bitte warten Sie auf den Abschluss, um einen neuen Prozess zu starten.</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1810"/>
+        <location filename="../heat_net_tool.py" line="1811"/>
         <source>Download complete!</source>
         <translation>Download abgeschlossen!</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="2023"/>
+        <location filename="../heat_net_tool.py" line="2028"/>
         <source>Completed!</source>
         <translation>Prozess fertiggestellt!</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1975"/>
+        <location filename="../heat_net_tool.py" line="1977"/>
         <source>Specify a file path for your custom temperature or uncheck the box.</source>
         <translation>Geben Sie einen Dateipfad für die Temperaturdaten an oder wählen Sie die Box ab.</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="2063"/>
+        <location filename="../heat_net_tool.py" line="2066"/>
         <source>Failed to import a required module: {}</source>
         <translation>Ein erforderliches Modul konnte nicht importiert werden: {}</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="2064"/>
+        <location filename="../heat_net_tool.py" line="2067"/>
         <source>Please install all required Python packages by pressing &quot;Install Packages&quot; in the Introduction part of the F|Heat plugin.</source>
         <translation>Bitte installieren Sie alle benötigten Python-Pakete, indem Sie im Einleitungsteil des F|Heat-Plugins auf „Pakete installieren“ klicken.</translation>
     </message>
     <message>
-        <location filename="../heat_net_tool.py" line="1412"/>
+        <location filename="../heat_net_tool.py" line="1409"/>
         <source>Some Buildings are not connected to the street network! Please connect the nearest street to the street network by using the snapping tool or set the &quot;Moegliche_Route/possoble_route&quot;-attribute of their corresponding street to zero to connect them to another street.</source>
         <translation>Einige Gebäude sind nicht mit dem Straßennetz verbunden! Bitte verbinden Sie die nächstgelegene Straße mit dem Straßennetz, indem Sie das Einrastwerkzeug verwenden oder setzen Sie das „Moegliche_Route“-Attribut der entsprechenden Straße auf Null, um das Gebäude mit einer anderen Straße zu verbinden.</translation>
     </message>
@@ -1053,7 +1053,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Network Analysis&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;The buildings are connected to a heat source specified by the user. The resulting network is saved as a shapefile and a summary of the net is also saved as en excel file.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;,&apos;sans-serif&apos;; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -1097,6 +1097,77 @@ p, li { white-space: pre-wrap; }
         <location filename="../heat_net_tool_dialog_base.ui" line="1976"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The design is carried out for a district heating system within a specific temperature range. Anergy / LowEx networks and high-temperature / Steam networks are not supported. Therefore, for the flow temperature, only values between 60 °C and 90 °C  can be selected. The return temperature must be between 40 °C and 80 °C.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Die Auslegung erfolgt für ein Wärmenetz innerhalb eines bestimmten Temperaturbereichs. Anergie-/LowEx-Netze und Hochtemperatur-/Dampf-Netze werden nicht unterstützt. Daher können für die Vorlauftemperatur nur Werte zwischen 60 °C und 90 °C ausgewählt werden. Die Rücklauftemperatur muss zwischen 40 °C und 80 °C liegen.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../heat_net_tool_dialog_base.ui" line="313"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;,&apos;sans-serif&apos;; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;This plugin facilitates municipal heat planning by providing users with access to various Python libraries within QGIS, eliminating the need for programming expertise. It streamlines the heat planning process by automating tasks such as data download, file adjustment, and network analysis.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;To ensure that the required packages are installed, please click on &amp;quot;Install Packages&amp;quot; at the bottom of this page. You either need administrator rights or have the same python version installed as used by QGIS. This will automatically install the necessary Python libraries: &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;geopandas, OWSLib, pandas, fiona, numpy, networkx, matplotlib, openpyxl, demandlib, workalendar&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;Alternatively, you can follow the steps from this guide and install the libraries yourself:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;See the F|Heat documentation or our german website for further information:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://f-heat-qgis.readthedocs.io/en/latest/&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://f-heat-qgis.readthedocs.io/en/latest/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://fheat.readthedocs.io/en/latest/index.html&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://www.fh-muenster.de/de/fheat/index&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Since this plugin is tailored to NRW, Germany, all attributes of the generated shape files are translated into German. See the documentation for an explanation of the attributes.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;The plugin is divided into four tabs.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;- Download Files and Adjust Files are tailored for use in NRW, Germany.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;- Status Analysis, Network Analysis can also be used with other shape files, as long as they contain the necessary attributes.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Download Files&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;The plugin starts at the very beginning of the planning process by first downloading the shapefiles of the buildings, parcels and streets of the city or municipality to be analyzed.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Adjust Files&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;The shapefiles are adjusted for usage in further calculations. Various attributes are added.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Status Analysis&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Heat line density is added to the streets shapefile. Then the parcels of neighboring buildings are merged into a larger polygon and supplemented with attributes to help finding suitable areas for heating networks.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Network Analysis&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;The buildings are connected to a heat source specified by the user. The resulting network is saved as a shapefile and a summary of the net is also saved as en excel file.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;,&apos;sans-serif&apos;; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Dieses Plugin erleichtert die kommunale Wärmeplanung, indem es den Nutzern Zugang zu verschiedenen Python-Bibliotheken innerhalb von QGIS bietet, ohne dass Programmierkenntnisse erforderlich sind. Es optimiert den Wärmeplanungsprozess, indem es Aufgaben wie das Herunterladen von Daten, die Anpassung von Dateien und die Netzwerkanalyse automatisiert.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;Um sicherzustellen, dass die erforderlichen Pakete installiert sind, klicken Sie bitte auf &apos;Pakete installieren&apos; am Ende dieser Seite. Sie benötigen entweder Administratorrechte oder müssen dieselbe Python-Version installiert haben, die von QGIS verwendet wird. Dies installiert automatisch die notwendigen Python-Bibliotheken:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;geopandas, OWSLib, pandas, fiona, numpy, networkx, matplotlib, openpyxl, demandlib, workalendar&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;Alternativ können Sie die Schritte aus diesem Leitfaden befolgen und die Bibliotheken selbst installieren:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;Siehe die F|Heat-Dokumentation oder unsere deutsche Webseite für weitere Informationen:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://f-heat-qgis.readthedocs.io/en/latest/&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://f-heat-qgis.readthedocs.io/en/latest/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://www.fh-muenster.de/de/fheat/index&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://www.fh-muenster.de/de/fheat/index&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Da dieses Plugin speziell auf NRW, Deutschland zugeschnitten ist, sind alle Attribute der generierten Shapefiles ins Deutsche übersetzt. Eine Erläuterung der Attribute finden Sie in der Dokumentation.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Das Plugin ist in vier Registerkarten unterteilt.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;- Dateien herunterladen und Dateien anpassen sind für den Einsatz in NRW, Deutschland angepasst.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;- Statusanalyse, Netzwerkanalyse können auch mit anderen Shapefiles verwendet werden, solange diese die erforderlichen Attribute enthalten.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Dateien herunterladen&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Das Plugin beginnt ganz am Anfang des Planungsprozesses, indem es zunächst die Shapefiles der Gebäude, Flurstücke und Straßen der zu analysierenden Stadt oder Gemeinde herunterlädt.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Dateien anpassen&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Die Shapefiles werden für die Nutzung in weiteren Berechnungen angepasst. Verschiedene Attribute werden hinzugefügt.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Statusanalyse&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Die Wärmedichte wird dem Straßenshapefile hinzugefügt. Dann werden die Flurstücke benachbarter Gebäude zu einem größeren Polygon zusammengeführt und mit Attributen ergänzt, um geeignete Bereiche für Wärmenetze zu finden.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; text-decoration: underline;&quot;&gt;Netzwerkanalyse&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;Die Gebäude werden mit einer vom Benutzer angegebenen Wärmequelle verbunden. Das resultierende Netzwerk wird als Shapefile gespeichert und eine Zusammenfassung des Netzes wird zudem als Excel-Datei gespeichert.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 </TS>

@@ -9,6 +9,9 @@ import shutil
 from owslib.wfs import WebFeatureService
 from shapely.geometry import Point, Polygon, box
 from shapely.ops import unary_union
+from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.core import QgsNetworkAccessManager
+from qgis.PyQt.QtCore import QEventLoop, QUrl
     
 def file_list_from_URL(url):
     '''lists downloadable files from given URL
@@ -37,6 +40,51 @@ def file_list_from_URL(url):
     for dataset in data_dict.get('datasets', []):
         files.extend(dataset.get('files', []))
     
+    return files
+
+def file_list_from_URL_QGIS(url: str):
+    """
+    Lists downloadable files from given URL using QgsNetworkAccessManager.
+
+    Parameters
+    ----------
+    url : str
+        The URL from which to download and extract the file list.
+
+    Returns
+    -------
+    list
+        A list of files found in all entries under 'datasets'.
+    """
+    nam = QgsNetworkAccessManager.instance()
+    request = QNetworkRequest(QUrl(url))
+
+    # Start the request
+    reply = nam.get(request)
+
+    # Event loop to wait for the reply (blocking)
+    loop = QEventLoop()
+    reply.finished.connect(loop.quit)
+    loop.exec_()
+
+    if reply.error():
+        raise Exception(f"Network error: {reply.errorString()}")
+
+    # Get data and decode
+    data_bytes = reply.readAll()
+    reply.deleteLater()
+
+    # Deine ursprüngliche latin1-Dekodierung
+    filestring = bytes(data_bytes).decode("latin1").strip()
+
+    # In dict umwandeln
+    data_dict = ast.literal_eval(filestring)
+
+    # Dateien extrahieren
+    files = []
+    for dataset in data_dict.get("datasets", []):
+        files.extend(dataset.get("files", []))
+
     return files
 
 def search_filename(files, city_id):
@@ -140,6 +188,60 @@ def read_file_from_zip(url, zipfile, file_pattern, file_type='.shp', encoding='u
 
             # Clean up: Remove the temporary directory
             shutil.rmtree(temp_dir)
+    return data
+
+def read_file_from_zip_QGIS(url, zipfile, file_pattern, file_type='.shp', encoding='utf-8', delimiter=';'):
+    """
+    Reads a file (GeoDataFrame for shapefiles or DataFrame for CSV) from a downloadable zip file
+    using QgsNetworkAccessManager (QGIS compatible).
+    """
+
+    # Download file 
+    nam = QgsNetworkAccessManager.instance()
+    request = QNetworkRequest(QUrl(url + zipfile))
+    reply = nam.get(request)
+
+    loop = QEventLoop()
+    reply.finished.connect(loop.quit)
+    loop.exec_()
+
+    if reply.error():
+        raise Exception(f"Network error: {reply.errorString()}")
+
+    zip_bytes = reply.readAll()
+    reply.deleteLater()
+
+    # Extract zip to temp folder
+    temp_dir = '/tmp/extracted_zip'
+    os.makedirs(temp_dir, exist_ok=True)
+
+    with ZipFile(BytesIO(bytes(zip_bytes))) as my_zip_file:
+        my_zip_file.extractall(temp_dir)
+
+        # search matching file
+        file_list = my_zip_file.namelist()
+        matching_files = [
+            file for file in file_list
+            if file_pattern in file and file.endswith(file_type)
+        ]
+
+        if not matching_files:
+            shutil.rmtree(temp_dir)
+            raise FileNotFoundError(f"No file matching {file_pattern}{file_type} found in archive.")
+
+        file = matching_files[0]
+
+        # Read file depending on type
+        if file_type in ['.shp', '.gpkg']:
+            data = gpd.read_file(os.path.join(temp_dir, file), encoding=encoding)
+        elif file_type == '.csv':
+            data = pd.read_csv(os.path.join(temp_dir, file), encoding=encoding, delimiter=delimiter)
+        else:
+            shutil.rmtree(temp_dir)
+            raise ValueError(f"Unsupported file type: {file_type}")
+
+    # Cleanup
+    shutil.rmtree(temp_dir)
     return data
 
 def filter_df(name, dataframe, parameter):
@@ -260,7 +362,7 @@ def clean_data(df):
     pd.DataFrame
         The cleaned DataFrame with invalid characters replaced.
     '''
-    df.replace({'\x96': '-', '': '-'}, regex=True, inplace=True)
+    df.replace({'\x96': '-', 'â': '-', '': '-'}, regex=True, inplace=True)
     return df
 
 def add_point(df):

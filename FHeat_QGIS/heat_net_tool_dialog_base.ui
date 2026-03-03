@@ -93,8 +93,8 @@ QTabWidget  &gt; QWidget &gt; QWidget  {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>643</width>
-        <height>837</height>
+        <width>626</width>
+        <height>838</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_10">
@@ -323,7 +323,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;See the F|Heat documentation or our german website for further information:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://fheat.readthedocs.io/en/latest/index.html&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://fheat.readthedocs.io/en/latest/index.html&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://f-heat-qgis.readthedocs.io/en/latest/&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://f-heat-qgis.readthedocs.io/en/latest/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://fheat.readthedocs.io/en/latest/index.html&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;https://www.fh-muenster.de/de/fheat/index&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt; text-decoration: underline; color:#3978ff;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;Since this plugin is tailored to NRW, Germany, all attributes of the generated shape files are translated into German. See the documentation for an explanation of the attributes.&lt;/span&gt;&lt;/p&gt;

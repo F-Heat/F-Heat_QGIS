@@ -6,9 +6,9 @@
 name=F|Heat 
 qgisMinimumVersion=3.3
 description=This plugin provides tools for district heating planning
-about=This plugin provides tools for municipal heat planning. It supports the entire process — from downloading required spatial data (shapefiles) to designing a district heating network and exporting results as a report. Additional Python libraries are required. Please refer to the documentation on ReadTheDocs (linked in the repository) or visit our German homepage for a full installation guide.
-version=0.1
-author=Lars Goray
+about=This plugin provides tools for municipal heat planning. It supports the entire process — from downloading required spatial data (shapefiles) to designing a district heating network and exporting results as a report. The plugin is currently tailored to data sources available in North Rhine-Westphalia (NRW), Germany. Use in other regions may require adapting data formats and sources. Additional Python libraries are required. Please refer to the documentation on ReadTheDocs (linked in the repository) or visit our German homepage for a full installation guide.
+version=0.1.1
+author=FH Münster University of Applied Sciences
 email=FHeat@fh-muenster.de
 tracker=https://github.com/F-Heat/F-Heat_QGIS/issues
 repository=https://github.com/F-Heat/F-Heat_QGIS/tree/main/FHeat_QGIS
@@ -18,7 +18,13 @@ repository=https://github.com/F-Heat/F-Heat_QGIS/tree/main/FHeat_QGIS
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-# changelog=
+changelog=0.1.1 2025-09-23:
+	*Fixed: Worker flag (self.worker_running) is now reset at the start of on_task_finished to prevent tasks from remaining locked if an error occurs.
+	*Changed: Updated download URL for census data and read the docs link
+	*Added: New download functions based on QgsNetworkAccessManager in download_files.py
+	*Changed: Data downloads now use QgsNetworkAccessManager instead of urllib, ensuring QGIS proxy settings are respected
+	*Changed: Updated numpy version in requirements.txt
+
 
 # Tags are comma separated with spaces allowed
 tags=python, FHeat, F|Heat, F-Heat, district heating, municipal heat planning, network, map

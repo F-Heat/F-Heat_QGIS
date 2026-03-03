@@ -2,7 +2,7 @@ geopandas
 OWSLib
 Pandas
 fiona
-numpy
+numpy==1.26.4
 networkx
 matplotlib
 openpyxl

@@ -103,9 +103,6 @@ def calculate_diameter_velocity_loss(volumeflow, htemp, ltemp, length, pipe_info
         - loss (float): Heat loss.
         - loss_extra (float): Heat loss with extra insulation.
     '''
-    mtemp = (htemp+ltemp)/2
-    K = mtemp - 10  # Outside Temp. = 10°C for underground installation 
-
     # non-house connections should have at least dn = 32(=DN[2])
     if edge_type == 'Hausanschluss':
         start_index = 0
@@ -123,14 +120,18 @@ def calculate_diameter_velocity_loss(volumeflow, htemp, ltemp, length, pipe_info
     d_i = pipe_info['di'].iloc[idx]
     DN = pipe_info['DN'].iloc[idx]
     u = pipe_info['U-Value'].iloc[idx]
-    u_plus = pipe_info['U-Value_extra_insulation'].iloc[idx]
+    u_extra = pipe_info['U-Value_extra_insulation'].iloc[idx]
 
     # calculate velocity and loss
     r = d_i / 2
     velocity = volumeflow * 1000 / (np.pi * pow(r, 2))  # dm^3/mm^2 --> Factor 1000
+
+    # temperature difference for heat loss
+    mtemp = (htemp+ltemp)/2
+    K = mtemp - 10  # Outside Temp. = 10°C for underground installation 
     
     loss = 8760 * 2 * (u * K * length) / 1000  # 8760 h/a, 2* --> supply and return
-    loss_extra = 8760 * 2 * (u_plus * K * length) / 1000
+    loss_extra = 8760 * 2 * (u_extra * K * length) / 1000
     return DN, velocity, loss, loss_extra
 
 class Streets:
@@ -947,7 +948,7 @@ class Result:
 
         self.data_dict = data_dict
 
-    def create_df_from_dataDict(self,net_name='Netz'):
+    def create_df_from_dataDict(self):
         '''
         Converts the dictionary to a result DataFrame.
 
@@ -967,7 +968,7 @@ class Result:
         # Add the sum row to df
         df = pd.concat([df, df_sum])
 
-        self.gdf = df
+        self.df = df
     
     def save_in_excel(self, result_table, col = 0, row = 0, index_bool=False, sheet_option ='replace', sheet = 'Zusammenfassung'):
         '''

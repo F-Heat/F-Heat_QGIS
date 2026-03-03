@@ -42,7 +42,7 @@ try:
     import pandas as pd
     import geopandas as gpd
     from shapely import Point
-    from .src.download_files import file_list_from_URL, search_filename, read_file_from_zip, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
+    from .src.download_files import file_list_from_URL_QGIS, search_filename, read_file_from_zip_QGIS, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
     from .src.adjust_files import Streets_adj, Buildings_adj, Parcels_adj, spatial_join
     from .src.status_analysis import WLD, Polygons
     from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
@@ -326,7 +326,7 @@ class HeatNetTool:
         import pandas as pd
         import geopandas as gpd
         from shapely import Point
-        from .src.download_files import file_list_from_URL, search_filename, read_file_from_zip, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
+        from .src.download_files import file_list_from_URL_QGIS, search_filename, read_file_from_zip_QGIS, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
         from .src.adjust_files import Streets_adj, Buildings_adj, Parcels_adj, spatial_join
         from .src.status_analysis import WLD, Polygons
         from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
@@ -839,7 +839,7 @@ class HeatNetTool:
             label_update.emit(self.tr('Downloading...'), 'white')
 
             # buildings shapes
-            all_buildings_files = file_list_from_URL(url_buildings+'index.json')
+            all_buildings_files = file_list_from_URL_QGIS(url_buildings+'index.json')
             progress_update.emit(10) # update progressBar
             buildings_zip = search_filename(all_buildings_files, municipality_key)
             
@@ -850,13 +850,13 @@ class HeatNetTool:
             
             progress_update.emit(15) # update progressBar
             buildings_file_pattern = f'WBM-NRW_{municipality_key}' # file pattern maybe has to be renamed, when changes on the website occur
-            buildings_gdf = read_file_from_zip(url_buildings, buildings_zip, buildings_file_pattern)
+            buildings_gdf = read_file_from_zip_QGIS(url_buildings, buildings_zip, buildings_file_pattern)
 
             progress_update.emit(35) # update progressBar
 
             # streets shapes
             streets_file_pattern = f'WBM-NRW-Waermelinien_{municipality_key}' # file pattern maybe has to be renamed, when changes on the website occur
-            streets_gdf = read_file_from_zip(url_buildings, buildings_zip, streets_file_pattern)
+            streets_gdf = read_file_from_zip_QGIS(url_buildings, buildings_zip, streets_file_pattern)
 
             progress_update.emit(55) # update progressBar
 
@@ -930,14 +930,14 @@ class HeatNetTool:
             progress_update.emit(5)
             
             ## load zensus data
-            url_zensus = 'https://www.zensus2022.de/static/Zensus_Veroeffentlichung/'
-
+            url_zensus = 'https://www.destatis.de/static/DE/zensus/gitterdaten/'
+            
             heizungsart_zip = 'Zensus2022_Heizungsart.zip'
             energietraeger_zip = 'Zensus2022_Energietraeger.zip'
 
-            df_Heizungsart = read_file_from_zip(url_zensus, heizungsart_zip, 'Zensus2022_Heizungsart_100m-Gitter', '.csv', encoding='latin1')
+            df_Heizungsart = read_file_from_zip_QGIS(url_zensus, heizungsart_zip, 'Zensus2022_Heizungsart_100m-Gitter', '.csv', encoding='latin1')
             progress_update.emit(20)
-            df_Energietraeger = read_file_from_zip(url_zensus, energietraeger_zip, 'Zensus2022_Energietraeger_100m-Gitter', '.csv', encoding='latin1')
+            df_Energietraeger = read_file_from_zip_QGIS(url_zensus, energietraeger_zip, 'Zensus2022_Energietraeger_100m-Gitter', '.csv', encoding='latin1')
 
             # only data within bbox
             df_Heizungsart = df_Heizungsart[(df_Heizungsart['x_mp_100m'] > xmin) & (df_Heizungsart['x_mp_100m'] < xmax) & (df_Heizungsart['y_mp_100m'] > ymin) & (df_Heizungsart['y_mp_100m'] < ymax)]
@@ -1339,9 +1339,6 @@ class HeatNetTool:
         if self.dlg.net_lineEdit_net.text().strip() == "":
             label_update.emit(self.tr('Specify a file path for the net shapefile output'),'orange')
             return
-        if self.dlg.net_lineEdit_net.text().strip() == "":
-            label_update.emit(self.tr('Specify a file path for the result file'),'orange')
-            return
        
         progress_update.emit(2) # update progressBar
 
@@ -1621,7 +1618,7 @@ class HeatNetTool:
             return
 
         result.create_data_dict(buildings.gdf, net_gdf, load_profiles, self.dn_list, heat_attribute, t_supply, t_return)
-        result.create_df_from_dataDict(net_name = os.path.splitext(os.path.basename(net_path))[0])
+        result.create_df_from_dataDict()
         
         progress_update.emit(15) # update progressBar
 
@@ -1650,7 +1647,7 @@ class HeatNetTool:
         temperature_data = self.temp_profile['TT_TU']
 
         # load_profile class
-        load_profile = LoadProfile(result.gdf, result_path, year, temperature_data, holidays)
+        load_profile = LoadProfile(result.df, result_path, year, temperature_data, holidays)
         
         # dataframe for collecting generated profiles
         demand = load_profile.set_up_df(year, resolution, freq)
@@ -1752,7 +1749,9 @@ class HeatNetTool:
         
         def on_task_finished():
             '''function that is executed, once the background task is complete'''
-
+            # Reset worker_running
+            self.worker_running = False
+            
             # Check if background tasl is complete
             if self.download_status == 'complete':
                 # Get paths from line edits
@@ -1765,17 +1764,16 @@ class HeatNetTool:
                 self.streets_gdf.to_file(streets_path)
                 self.parcels_gdf.to_file(parcels_path)
 
-                # Füge die Shapefiles zum QGIS Projekt hinzu
+                # Add Shapefiles to QGIS
                 self.add_shapefile_to_project(parcels_path, style = 'parcels', group_name = self.tr('Basic Data'))
                 self.add_shapefile_to_project(buildings_path, style = 'buildings', group_name = self.tr('Basic Data'))
                 self.add_shapefile_to_project(streets_path, style = 'streets', group_name = self.tr('Basic Data'))
 
-                # GUI-Feedback aktualisieren
+                # Update GUI-Feedback 
                 self.dlg.load_progressBar.setValue(100)
                 self.dlg.load_label_feedback.setStyleSheet("color: rgb(0, 255, 0)")
                 self.dlg.load_label_feedback.setText(self.tr('Download complete!'))
-            # Reset worker_running
-            self.worker_running = False
+            
             
         # Start the background process
         self.worker_running = True
@@ -1793,6 +1791,9 @@ class HeatNetTool:
         }
         def on_task_finished():
             '''function that is executed, once the background task is complete'''
+            # Reset worker_running
+            self.worker_running = False
+
             # check if the backround task is complete
             if self.download_zensus_status == 'complete':
                 # get path from lineEdit
@@ -1807,9 +1808,7 @@ class HeatNetTool:
                 # update progressBar
                 self.dlg.load_progressBar_zensus.setValue(100)
                 self.dlg.load_label_zensus.setStyleSheet("color: rgb(0, 255, 0)")
-                self.dlg.load_label_zensus.setText(self.tr('Download complete!'))
-            # Reset worker_running
-            self.worker_running = False
+                self.dlg.load_label_zensus.setText(self.tr('Download complete!'))    
             
         self.worker_running = True
         self.run_long_task(self.download_zensus, gui_elements, on_task_finished)
@@ -1832,6 +1831,9 @@ class HeatNetTool:
         }
         def on_task_finished():
             '''function that is executed, once the background task is complete'''
+            # Reset worker_running
+            self.worker_running = False
+            
             # check if the backround task is complete
             if self.bool_files_already_adjusted == False:
                 # get paths from layers
@@ -1862,8 +1864,7 @@ class HeatNetTool:
                 self.dlg.adjust_label_feedback.setStyleSheet("color: rgb(0, 255, 0)")
                 self.dlg.adjust_label_feedback.setText(self.tr('Completed!'))
                 self.dlg.adjust_label_feedback.repaint()
-            # Reset worker_running
-            self.worker_running = False
+            
         self.worker_running = True
         self.run_long_task(self.adjust_files, gui_elements, on_task_finished)
 
@@ -1879,6 +1880,9 @@ class HeatNetTool:
         }
         def on_task_finished():
             '''function that is executed, once the background task is complete'''
+            # Reset worker_running
+            self.worker_running = False
+            
             # check if the backround task is complete
             if self.status_analysis_status == 'complete':
                 # layer from combo box
@@ -1900,9 +1904,6 @@ class HeatNetTool:
                 self.dlg.status_label_response.setStyleSheet("color: rgb(0, 255, 0)")
                 self.dlg.status_label_response.setText(self.tr('Completed!'))
 
-            # Reset worker_running
-            self.worker_running = False
-            
         self.worker_running = True
         self.run_long_task(self.status_analysis, gui_elements, on_task_finished)
     
@@ -1924,6 +1925,9 @@ class HeatNetTool:
 
         def on_task_finished():
             '''function that is executed, once the background task is complete'''
+            # Reset worker_running
+            self.worker_running = False
+            
             # check if the backround task is complete
             if self.network_analysis_status == 'complete':
                 # path to save net shape file
@@ -1943,8 +1947,6 @@ class HeatNetTool:
                 self.dlg.net_label_response.repaint()
             elif self.network_analysis_status == 'plot':
                 self.graph.plot_graph(self.graph.start_point, self.graph.connected_points, self.graph.disconnected_buildings)
-            # Reset worker_running
-            self.worker_running = False
             return
         self.worker_running = True
         self.run_long_task(self.network_analysis, gui_elements, on_task_finished)
@@ -1982,6 +1984,9 @@ class HeatNetTool:
 
         def on_task_finished():
             '''function that is executed, once the background task is complete'''
+            # Reset worker_running
+            self.worker_running = False
+
             if self.result_status == 'complete':
 
                 result = self.result
@@ -1991,7 +1996,7 @@ class HeatNetTool:
                 result.copy_excel_file(costs_path)
 
                 # Save result
-                result.save_in_excel(result_table = result.gdf)
+                result.save_in_excel(result_table = result.df)
 
                 # Save Statistic
                 result.save_in_excel(result_table = result.statistic, sheet = 'Statistik')
@@ -2023,8 +2028,6 @@ class HeatNetTool:
                 self.dlg.net_label_response.setText(self.tr('Completed!'))
                 self.dlg.net_label_response.setStyleSheet("color: rgb(0, 255, 0)")
                 self.dlg.net_label_response.repaint()
-            # Reset worker_running
-            self.worker_running = False
         
         self.worker_running = True
         self.run_long_task(self.create_result, gui_elements, on_task_finished)
@@ -2048,7 +2051,7 @@ class HeatNetTool:
                 import pandas as pd
                 import geopandas as gpd
                 from shapely import Point
-                from .src.download_files import file_list_from_URL, search_filename, read_file_from_zip, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
+                from .src.download_files import file_list_from_URL_QGIS, search_filename, read_file_from_zip_QGIS, filter_df, get_shape_from_wfs, clean_data, add_point, create_square, get_area_for_zensus
                 from .src.adjust_files import Streets_adj, Buildings_adj, Parcels_adj, spatial_join
                 from .src.status_analysis import WLD, Polygons
                 from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
