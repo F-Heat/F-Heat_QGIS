@@ -224,49 +224,31 @@ class Buildings_adj():
     @staticmethod
     def extract_year(date_str):
         '''
-        Extracts the year from a date-like value.
+        Extracts the year from a date string.
 
-        This method extracts the year as an integer from a given date-like input.  
-        If the value is NaN, it returns NaN. If the input is a pandas.Timestamp or 
-        datetime-like object, the year attribute is used. If the input is a string, 
-        the method attempts to extract the year from the first four characters.  
-        If extraction fails, NaN is returned.
+        This method extracts the year as an integer from the beginning of a date string. If the date string
+        is NaN, it returns NaN.
 
         Parameters
         ----------
-        date_str : str or datetime-like
-            The date-like value from which to extract the year.
+        date_str : str
+            The date string from which to extract the year.
 
         Returns
         -------
         int or float
-            The extracted year as an integer, or NaN if the input is NaN or the year
-            cannot be determined.
+            The extracted year or NaN if the date string is NaN.
 
         Examples
         --------
         >>> Buildings_adj.extract_year("2023-07-17")
         2023
-        >>> Buildings_adj.extract_year(pd.Timestamp("2021-05-03"))
-        2021
         >>> Buildings_adj.extract_year(None)
         nan
-        >>> Buildings_adj.extract_year("invalid")
-        nan
         '''
-
-        if pd.isna(date_str): 
-            return np.nan 
-
-        # Wenn es bereits ein pandas.Timestamp oder datetime ist 
-        if hasattr(date_str, "year"): 
-            return int(date_str.year) 
-
-        # Falls es ein String ist 
-        try: 
-            return int(str(date_str)[:4]) 
-        except Exception: 
-            return np.nan 
+        if pd.notna(date_str):
+            return int(date_str[:4])
+        return np.nan
 
     def add_BAK(self,bins,labels):
         '''

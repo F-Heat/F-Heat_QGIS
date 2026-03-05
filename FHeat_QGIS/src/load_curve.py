@@ -254,7 +254,7 @@ class LoadProfile:
         self.holidays = holidays
         self.demand_time_series = pd.date_range(start=datetime.datetime(year, 1, 1, 0),
                                 end=datetime.datetime(year, 12, 31, 23),
-                                freq='h')
+                                freq='H')
     
     def create_heat_demand_profile(self, building_type, building_class, wind_class, ww_incl, annual_heat_demand):
         '''
@@ -297,7 +297,7 @@ class LoadProfile:
         resolution : int
             The number of periods in the time series.
         freq : str
-            Frequency of the time series (e.g., 'h' for hourly).
+            Frequency of the time series (e.g., 'H' for hourly).
 
         Returns
         -------
