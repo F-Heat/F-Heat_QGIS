@@ -297,7 +297,7 @@ class LoadProfile:
         resolution : int
             The number of periods in the time series.
         freq : str
-            Frequency of the time series (e.g., 'h' for hourly).
+            Frequency of the time series (e.g., 'H' for hourly).
 
         Returns
         -------

@@ -8,6 +8,9 @@ from openpyxl import load_workbook
 import sys
 import os
 
+#anzupassender Code wurde mit "change:" markiert 
+#change: ideales Netz ausgeben --> test mit prozentualen Verlusten
+
 def get_closest_point(line, point):
     '''
     Calculate the closest point on a line to a given point.
@@ -47,6 +50,7 @@ def calculate_GLF(n):
     d = 1.7627
     return a + (b / (1 + pow(n/c, d)))
 
+#change: CoolProp einfügen?
 def calculate_volumeflow(kW_GLF, htemp, ltemp):
     '''
     Calculate the volumetric flow rate in a pipeline.
@@ -65,7 +69,7 @@ def calculate_volumeflow(kW_GLF, htemp, ltemp):
     float
         Volumetric flow rate in liters per second.
     '''
-    #piecewise linear interpolation
+    #piecewise linear interpolation 
     t = [0, 10, 20, 30, 40, 50, 60, 70, 80 , 90, 100] 
     d = [0.99984, 0.9997, 0.99821, 0.99565, 0.99222, 0.98803, 0.9832, 0.97778, 0.97182, 0.96535, 0.9584]
     c = [4.2176, 4.1921, 4.1818, 4.1784, 4.1785, 4.1806, 4.1843, 4.1895, 4.1963, 4.205, 4.2159]
@@ -75,6 +79,9 @@ def calculate_volumeflow(kW_GLF, htemp, ltemp):
     volumeflow = kW_GLF / (density * cp * (int(htemp) - int(ltemp))) # liter/s
     return volumeflow
 
+#change: Excel ersetzen durch json
+#change: u-Wert-Berechnung 
+#change: Druckverlustberechnung einfügen --> return DN, velocity, heat_loss, heat_loss_extra, pressure_loss
 def calculate_diameter_velocity_loss(volumeflow, htemp, ltemp, length, pipe_info, edge_type):
     '''
     Calculate the diameter, velocity, and loss of pipelines.
@@ -862,6 +869,10 @@ class Result:
         l_temp : float
             Return temperature.
         '''
+
+        #change: worst path
+
+
         # Helper function
         def summarize_pipes(df, dn_list):
             '''

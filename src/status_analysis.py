@@ -180,6 +180,7 @@ class Polygons:
         join_result = gpd.sjoin(self.parcels, connected_buildings, how="inner", predicate="intersects")
 
         # Calculate area of overlap between parcels and buildings
+        #join_result['overlap_area'] = join_result.apply(lambda row: self.parcels.geometry.iloc[row.name].intersection(connected_buildings.geometry.iloc[row['index_right']]).area, axis=1)
         join_result['overlap_area'] = join_result.apply(lambda row: self.parcels.geometry.loc[row.name].intersection(connected_buildings.geometry.loc[row['index_right']]).area, axis=1)
         
         # Calculate coverage ratio
