@@ -75,7 +75,7 @@ class WLD:
             The attribute in the buildings GeoDataFrame representing heat consumption.
         '''
         self.streets['connected'] = [[] for _ in range(len(self.streets))]
-        self.streets[f'{heat_att}'] = 0.0
+        self.streets[f'{heat_att}'] = 0
 
         for idx, row in self.buildings.iterrows():
             heat_demand = row[heat_att]
@@ -98,7 +98,7 @@ class WLD:
             The attribute in the streets GeoDataFrame representing heat consumption.
         '''
         self.streets['WLD [kWh/a*m]'] = np.where(
-            self.streets['length'] != 0.0, self.streets[f'{heat_att}'] / self.streets['length'], np.nan)
+            self.streets['length'] != 0, self.streets[f'{heat_att}'] / self.streets['length'], np.nan)
     
     def rename_columns(self):
         '''
@@ -180,7 +180,7 @@ class Polygons:
         join_result = gpd.sjoin(self.parcels, connected_buildings, how="inner", predicate="intersects")
 
         # Calculate area of overlap between parcels and buildings
-        join_result['overlap_area'] = join_result.apply(lambda row: self.parcels.geometry.loc[row.name].intersection(connected_buildings.geometry.loc[row['index_right']]).area, axis=1)
+        join_result['overlap_area'] = join_result.apply(lambda row: self.parcels.geometry.iloc[row.name].intersection(connected_buildings.geometry.iloc[row['index_right']]).area, axis=1)
         
         # Calculate coverage ratio
         join_result['coverage_ratio'] = join_result['overlap_area'] / join_result['building_area']
