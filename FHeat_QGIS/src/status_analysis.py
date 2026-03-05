@@ -157,7 +157,7 @@ class Polygons:
         connected_building_ids = [int(id) for sublist in filtered_wld['connected'].dropna().str.split(',').tolist() if isinstance(sublist, list) for id in sublist]
 
         # Select buildings that are in the list of connected building IDs
-        connected_buildings = self.buildings[self.buildings['new_ID'].isin(connected_building_ids)]
+        connected_buildings = self.buildings[self.buildings['new_ID'].isin(connected_building_ids)].reset_index(drop=True)
 
         # Calculate area of building footprint
         connected_buildings['building_area'] = connected_buildings.geometry.area

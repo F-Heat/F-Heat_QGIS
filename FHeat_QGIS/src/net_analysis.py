@@ -183,7 +183,11 @@ class Streets:
                 if not pd.isna(street_id):
                     anschlusspunkt = row['Anschlusspunkt']
                     line = self.gdf['geometry'][street_id]
-                    line_coords = list(line.coords)
+                    line_coords = (
+                        [coord for geom in line.geoms for coord in geom.coords]
+                        if line.geom_type == 'MultiLineString'
+                        else list(line.coords)
+                    )
 
                     insertion_position = None
                     min_distance = float('inf')
@@ -252,7 +256,11 @@ class Source:
 
             # Iterate over each line in the street network
             for idx,row in streets.iterrows():
-                line_coords = list(row['geometry'].coords)  # List of points that make up the line
+                line_coords = (
+                    [coord for geom in row['geometry'].geoms for coord in geom.coords]
+                    if row['geometry'].geom_type == 'MultiLineString'
+                    else list(row['geometry'].coords)
+                )  # List of points that make up the line)
                 
                 # Iterate over each line segment to find the closest point
                 for i in range(1, len(line_coords)):
@@ -412,8 +420,12 @@ class Graph:
 
         # Add nodes and edges
         for idx, row in streets.iterrows():
-            geom = row['geometry']
-            line_coords = list(geom.coords)
+            line = row['geometry']
+            line_coords = (
+                [coord for geom in line.geoms for coord in geom.coords]
+                if line.geom_type == 'MultiLineString'
+                else list(line.coords)
+            )
 
             # Iterate over each point on the line
             for i in range(len(line_coords)):
