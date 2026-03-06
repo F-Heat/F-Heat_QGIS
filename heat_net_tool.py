@@ -1976,7 +1976,7 @@ class HeatNetTool:
 
         # json_file_path = Path(self.plugin_dir) / "data/pipe_data.json"
 
-        # # JSON laden
+        ##  JSON laden
         # with open(json_file_path, "r", encoding="utf-8") as f:
         #     data = json.load(f)
 

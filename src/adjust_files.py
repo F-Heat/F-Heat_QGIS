@@ -258,7 +258,7 @@ class Buildings_adj():
         if pd.isna(date_str):
             return np.nan
 
-        # Wenn es bereits ein pandas.Timestamp oder datetime ist
+        ## Wenn es bereits ein pandas.Timestamp oder datetime ist
         if hasattr(date_str, "year"):
             return int(date_str.year)
 
