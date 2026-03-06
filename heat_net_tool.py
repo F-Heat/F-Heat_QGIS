@@ -1632,7 +1632,7 @@ class HeatNetTool:
         
         progress_update.emit(20) # update progressBar
 
-        ### Load Curve ###
+        ## Load Curve ###
 
         # set up time data
         year = 2022
@@ -1918,10 +1918,14 @@ class HeatNetTool:
             'progressBar': self.dlg.net_progressBar, # progress bar 
             'label': self.dlg.net_label_response   # feedback label
         }
-
-        # pipe info
+    
+        # TODO: move to init and load only once because pipe data is not changing. Loading in background leads to crash because of windows access violation. Maybe loading in init and saving as self attribute is a solution
+        #old: pipe info
         excel_file_path = Path(self.plugin_dir) / 'data/pipe_data.xlsx'
         self.pipe_info = pd.read_excel(excel_file_path, sheet_name='pipe_data')
+
+        # json_file_path = Path(self.plugin_dir) / 'data/pipe_data.json'
+        # self.pipe_info = pd.read_json(json_file_path)
 
         def on_task_finished():
             '''function that is executed, once the background task is complete'''
@@ -1963,10 +1967,43 @@ class HeatNetTool:
             'progressBar': self.dlg.net_progressBar, # progress bar 
             'label': self.dlg.net_label_response   # feedback label
         }
-        # pipe info
+
+        # TODO: adjust old pipe info loading. Loading in background leads to crash because of windows access violation. Maybe loading in init and saving as self attribute is a solution
+        #old: pipe info
         excel_file_path = Path(self.plugin_dir) / 'data/pipe_data.xlsx'
         self.pipe_info = pd.read_excel(excel_file_path, sheet_name='pipe_data')
         self.dn_list = self.pipe_info['DN'].to_list()
+
+        # json_file_path = Path(self.plugin_dir) / "data/pipe_data.json"
+
+        # # JSON laden
+        # with open(json_file_path, "r", encoding="utf-8") as f:
+        #     data = json.load(f)
+
+        # # Liste aller pipe_types
+        # pipe_types = data["pipe_types"]
+
+        # # Wir flatten jede sizes-Liste und übernehmen Meta-Daten
+        # rows = []
+        # for pipe in pipe_types:
+        #     base_info = {
+        #         "pipe": pipe["pipe"],
+        #         "type": pipe["type"],
+        #         "manufacturer": pipe["manufacturer"],
+        #         "th_conductivity": pipe["material_properties"]["th_conductivity"],
+        #         "roughness": pipe["material_properties"]["roughness"]
+        #     }
+
+        #     for size in pipe["sizes"]:
+        #         row = base_info.copy()
+        #         row.update(size)  # DN, di, da, Da{}, a{}, c_pipe
+        #         rows.append(row)
+
+        # # In DataFrame umwandeln
+        # self.pipe_info = pd.DataFrame(rows)
+
+        # # DN-Liste wie vorher
+        # self.dn_list = sorted(self.pipe_info["DN"].unique().tolist())
 
         # temperature
         if self.dlg.net_checkBox_temperature.isChecked():

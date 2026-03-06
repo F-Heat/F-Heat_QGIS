@@ -253,7 +253,7 @@ class Buildings_adj():
         
         #if pd.notna(date_str):
         #    return int(date_str[:4])
-        #return np.nan
+        #return np.nan#
     
         if pd.isna(date_str):
             return np.nan

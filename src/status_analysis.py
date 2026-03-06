@@ -84,7 +84,7 @@ class WLD:
             self.streets.loc[id, f'{heat_att}'] += heat_demand
             self.streets.at[id, 'connected'].append(row['new_ID'])
             
-        # Convert the list of polygons to a comma-separated string: [123, 456, 789] >>> "123,456,789"
+        ## Convert the list of polygons to a comma-separated string: [123, 456, 789] >>> "123,456,789"
         self.streets['connected'] = self.streets['connected'].apply(lambda x: ','.join(map(str, x)))
         
 
