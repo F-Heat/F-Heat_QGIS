@@ -1621,7 +1621,7 @@ class HeatNetTool:
         # set up time data
         year = 2022
         resolution = 8760
-        freq = 'H'
+        freq = 'h'
 
         # Holidays
         cal = Germany()

@@ -75,7 +75,7 @@ class WLD:
             The attribute in the buildings GeoDataFrame representing heat consumption.
         '''
         self.streets['connected'] = [[] for _ in range(len(self.streets))]
-        self.streets[f'{heat_att}'] = 0
+        self.streets[f'{heat_att}'] = 0.0
 
         for idx, row in self.buildings.iterrows():
             heat_demand = row[heat_att]
@@ -98,7 +98,7 @@ class WLD:
             The attribute in the streets GeoDataFrame representing heat consumption.
         '''
         self.streets['WLD [kWh/a*m]'] = np.where(
-            self.streets['length'] != 0, self.streets[f'{heat_att}'] / self.streets['length'], np.nan)
+            self.streets['length'] != 0.0, self.streets[f'{heat_att}'] / self.streets['length'], np.nan)
     
     def rename_columns(self):
         '''
@@ -157,7 +157,7 @@ class Polygons:
         connected_building_ids = [int(id) for sublist in filtered_wld['connected'].dropna().str.split(',').tolist() if isinstance(sublist, list) for id in sublist]
 
         # Select buildings that are in the list of connected building IDs
-        connected_buildings = self.buildings[self.buildings['new_ID'].isin(connected_building_ids)]
+        connected_buildings = self.buildings[self.buildings['new_ID'].isin(connected_building_ids)].reset_index(drop=True)
 
         # Calculate area of building footprint
         connected_buildings['building_area'] = connected_buildings.geometry.area
@@ -180,7 +180,7 @@ class Polygons:
         join_result = gpd.sjoin(self.parcels, connected_buildings, how="inner", predicate="intersects")
 
         # Calculate area of overlap between parcels and buildings
-        join_result['overlap_area'] = join_result.apply(lambda row: self.parcels.geometry.iloc[row.name].intersection(connected_buildings.geometry.iloc[row['index_right']]).area, axis=1)
+        join_result['overlap_area'] = join_result.apply(lambda row: self.parcels.geometry.loc[row.name].intersection(connected_buildings.geometry.loc[row['index_right']]).area, axis=1)
         
         # Calculate coverage ratio
         join_result['coverage_ratio'] = join_result['overlap_area'] / join_result['building_area']

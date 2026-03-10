@@ -224,31 +224,57 @@ class Buildings_adj():
     @staticmethod
     def extract_year(date_str):
         '''
-        Extracts the year from a date string.
+        Extract the year from various date-like inputs.
 
-        This method extracts the year as an integer from the beginning of a date string. If the date string
-        is NaN, it returns NaN.
+        This function attempts to extract a four-digit year from different types of 
+        date representations. Supported input formats include:
+
+        - pandas.Timestamp objects
+        - datetime.datetime (or objects with a `.year` attribute)
+        - strings that begin with a four‑digit year (e.g. "2023-07-17")
+        - numeric or other objects that can be converted to a string starting with a year
+
+        If the input is NaN or cannot be interpreted as containing a valid year, the 
+        function returns np.nan.
 
         Parameters
         ----------
-        date_str : str
-            The date string from which to extract the year.
+        date_str : any
+            The date input from which the year should be extracted. Can be a string,
+            datetime-like object, or any object with a `.year` attribute.
 
         Returns
         -------
         int or float
-            The extracted year or NaN if the date string is NaN.
+            The extracted year as an integer, or np.nan if the input is NaN or the 
+            year cannot be parsed.
 
         Examples
         --------
-        >>> Buildings_adj.extract_year("2023-07-17")
+        >>> extract_year("2023-07-17")
         2023
-        >>> Buildings_adj.extract_year(None)
+
+        >>> extract_year(pd.Timestamp("2021-01-05"))
+        2021
+
+        >>> extract_year(None)
+        nan
+
+        >>> extract_year("invalid")
         nan
         '''
-        if pd.notna(date_str):
-            return int(date_str[:4])
-        return np.nan
+        if pd.isna(date_str): 
+            return np.nan 
+
+        # Wenn es bereits ein pandas.Timestamp oder datetime ist 
+        if hasattr(date_str, "year"): 
+            return int(date_str.year) 
+
+        # Falls es ein String ist 
+        try: 
+            return int(str(date_str)[:4]) 
+        except Exception: 
+            return np.nan 
 
     def add_BAK(self,bins,labels):
         '''

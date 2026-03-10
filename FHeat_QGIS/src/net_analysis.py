@@ -183,7 +183,11 @@ class Streets:
                 if not pd.isna(street_id):
                     anschlusspunkt = row['Anschlusspunkt']
                     line = self.gdf['geometry'][street_id]
-                    line_coords = list(line.coords)
+                    line_coords = (
+                        [coord for geom in line.geoms for coord in geom.coords]
+                        if line.geom_type == 'MultiLineString'
+                        else list(line.coords)
+                    )
 
                     insertion_position = None
                     min_distance = float('inf')
@@ -252,7 +256,11 @@ class Source:
 
             # Iterate over each line in the street network
             for idx,row in streets.iterrows():
-                line_coords = list(row['geometry'].coords)  # List of points that make up the line
+                line_coords = (
+                    [coord for geom in row['geometry'].geoms for coord in geom.coords]
+                    if row['geometry'].geom_type == 'MultiLineString'
+                    else list(row['geometry'].coords)
+                )  # List of points that make up the line)
                 
                 # Iterate over each line segment to find the closest point
                 for i in range(1, len(line_coords)):
@@ -412,8 +420,12 @@ class Graph:
 
         # Add nodes and edges
         for idx, row in streets.iterrows():
-            geom = row['geometry']
-            line_coords = list(geom.coords)
+            line = row['geometry']
+            line_coords = (
+                [coord for geom in line.geoms for coord in geom.coords]
+                if line.geom_type == 'MultiLineString'
+                else list(line.coords)
+            )
 
             # Iterate over each point on the line
             for i in range(len(line_coords)):
@@ -770,7 +782,7 @@ class Net:
         """
         for u, v in self.net.edges():
             if 'power_th [kW]' not in self.net[u][v]:
-                self.net[u][v]['power_th [kW]'] = 0
+                self.net[u][v]['power_th [kW]'] = 0.0
 
     def graph_to_gdf(self):
         '''
@@ -880,10 +892,10 @@ class Result:
             # Initialize an empty DataFrame for the result
             result = pd.DataFrame({'DN [mm]': dn_list}, index=dn_list)
             result['Anzahl Hausanschluesse'] = 0
-            result['Hausanschlusslaenge [m]'] = 0
-            result['Trassenlaenge [m]'] = 0
-            result['Verlust [MWh/a]'] = 0
-            result['Verlust bei extra Daemmung [MWh/a]'] = 0
+            result['Hausanschlusslaenge [m]'] = 0.0
+            result['Trassenlaenge [m]'] = 0.0
+            result['Verlust [MWh/a]'] = 0.0
+            result['Verlust bei extra Daemmung [MWh/a]'] = 0.0
 
             # Group by DN and type
             grouped = df.groupby(['DN [mm]', 'Typ'])
