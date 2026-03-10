@@ -782,7 +782,7 @@ class Net:
         """
         for u, v in self.net.edges():
             if 'power_th [kW]' not in self.net[u][v]:
-                self.net[u][v]['power_th [kW]'] = 0
+                self.net[u][v]['power_th [kW]'] = 0.0
 
     def graph_to_gdf(self):
         '''
@@ -892,10 +892,10 @@ class Result:
             # Initialize an empty DataFrame for the result
             result = pd.DataFrame({'DN [mm]': dn_list}, index=dn_list)
             result['Anzahl Hausanschluesse'] = 0
-            result['Hausanschlusslaenge [m]'] = 0
-            result['Trassenlaenge [m]'] = 0
-            result['Verlust [MWh/a]'] = 0
-            result['Verlust bei extra Daemmung [MWh/a]'] = 0
+            result['Hausanschlusslaenge [m]'] = 0.0
+            result['Trassenlaenge [m]'] = 0.0
+            result['Verlust [MWh/a]'] = 0.0
+            result['Verlust bei extra Daemmung [MWh/a]'] = 0.0
 
             # Group by DN and type
             grouped = df.groupby(['DN [mm]', 'Typ'])
