@@ -47,7 +47,7 @@ try:
     from .src.status_analysis import WLD, Polygons
     from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
     from .src.load_curve import Temperature, LoadProfile
-    from .src.dhnx_integration import run_dhnx_optimisation
+    # from .src.dhnx_integration import run_dhnx_optimisation
     from workalendar.europe import Germany
     from matplotlib.figure import Figure
     import matplotlib.pyplot as plt
@@ -2047,7 +2047,8 @@ class HeatNetTool:
                 from .src.status_analysis import WLD, Polygons
                 from .src.net_analysis import Streets, Source, Buildings, Graph, Net, Result, get_closest_point, calculate_GLF, calculate_volumeflow, calculate_diameter_velocity_loss
                 from .src.load_curve import Temperature, LoadProfile
-                from .src.dhnx_integration import run_dhnx_optimisation
+                # TODO: add DHNx integration as optional module that is only imported when the user wants to use the DHNx optimisation
+                # from .src.dhnx_integration import run_dhnx_optimisation
                 from workalendar.europe import Germany
                 from matplotlib.figure import Figure
                 import matplotlib.pyplot as plt
@@ -2127,13 +2128,13 @@ class HeatNetTool:
             self.dlg.net_pushButton_create_result.clicked.connect(self.start_create_result)
 
             ### DHNx Optimisation ###
-
+            # TODO: add option to select DHNx input file instead of creating new one from layers
             # output file
-            self.dlg.dhnx_pushButton_output.clicked.connect(
-                lambda: self.select_output_file(self.project_dir, self.dlg.dhnx_lineEdit_output, '*.gpkg'))
+            # self.dlg.dhnx_pushButton_output.clicked.connect(
+            #     lambda: self.select_output_file(self.project_dir, self.dlg.dhnx_lineEdit_output, '*.gpkg'))
 
             # start DHNx optimisation
-            self.dlg.dhnx_pushButton_start.clicked.connect(self.start_dhnx_optimisation)
+            # self.dlg.dhnx_pushButton_start.clicked.connect(self.start_dhnx_optimisation)
         
         # Create F|Heat layer structure
         self.create_layer_tree_structure()
@@ -2162,13 +2163,14 @@ class HeatNetTool:
         self.dlg.net_comboBox_buildings.currentIndexChanged.connect(
             lambda: self.load_attributes('net_comboBox_buildings', 'net_comboBox_power'))
 
+        # TODO: add option to select DHNx input file instead of creating new one from layers
         # Connect attribute combobox to layer combobox (DHNx)
-        self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_heat')
-        self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_power')
-        self.dlg.dhnx_comboBox_buildings.currentIndexChanged.connect(
-            lambda: self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_heat'))
-        self.dlg.dhnx_comboBox_buildings.currentIndexChanged.connect(
-            lambda: self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_power'))
+        # self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_heat')
+        # self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_power')
+        # self.dlg.dhnx_comboBox_buildings.currentIndexChanged.connect(
+        #     lambda: self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_heat'))
+        # self.dlg.dhnx_comboBox_buildings.currentIndexChanged.connect(
+        #     lambda: self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_power'))
 
         # show the dialog
         self.dlg.show()
@@ -2176,148 +2178,149 @@ class HeatNetTool:
     # -------------------------------------------------------------------------
     # DHNx Optimisation
     # -------------------------------------------------------------------------
+    # TODO: add option to select DHNx input file instead of creating new one from layers. In this case, the conversion from F|Heat to DHNx ThermalNetwork would be skipped and the selected file would be used directly as input for the optimisation.
+    # def dhnx_optimisation(self, progress_update, label_update):
+    #     '''
+    #     Background task: convert F|Heat network to DHNx ThermalNetwork and run
+    #     investment optimisation.
 
-    def dhnx_optimisation(self, progress_update, label_update):
-        '''
-        Background task: convert F|Heat network to DHNx ThermalNetwork and run
-        investment optimisation.
+    #     Uses the HiGHS LP/MILP solver and writes results to a GeoPackage.
 
-        Uses the HiGHS LP/MILP solver and writes results to a GeoPackage.
+    #     Parameters
+    #     ----------
+    #     progress_update : pyqtSignal(int)
+    #         Signal to update the progress bar (0–100).
+    #     label_update : pyqtSignal(str, str)
+    #         Signal to emit (text, colour) status messages.
 
-        Parameters
-        ----------
-        progress_update : pyqtSignal(int)
-            Signal to update the progress bar (0–100).
-        label_update : pyqtSignal(str, str)
-            Signal to emit (text, colour) status messages.
+    #     Returns
+    #     -------
+    #     None  – results are stored in ``self.dhnx_results_gdf`` and
+    #             ``self.dhnx_summary``.
+    #     '''
+    #     from .src.dhnx_integration import run_dhnx_optimisation
 
-        Returns
-        -------
-        None  – results are stored in ``self.dhnx_results_gdf`` and
-                ``self.dhnx_summary``.
-        '''
-        from .src.dhnx_integration import run_dhnx_optimisation
+    #     self.dhnx_status = 0
 
-        self.dhnx_status = 0
+    #     label_update.emit(self.tr('Validating inputs …'), 'white')
+    #     progress_update.emit(1)
 
-        label_update.emit(self.tr('Validating inputs …'), 'white')
-        progress_update.emit(1)
+    #     # ── Collect inputs from GUI ──────────────────────────────────────────
+    #     net_path, net_layer, _ = self.get_layer_path_from_combobox(self.dlg.dhnx_comboBox_net)
+    #     bld_path, bld_layer, _ = self.get_layer_path_from_combobox(self.dlg.dhnx_comboBox_buildings)
+    #     src_path, src_layer, _ = self.get_layer_path_from_combobox(self.dlg.dhnx_comboBox_source)
+    #     study_area_path, study_area_layer, _ = self.get_layer_path_from_combobox(
+    #         self.dlg.dhnx_comboBox_study_area
+    #     )
 
-        # ── Collect inputs from GUI ──────────────────────────────────────────
-        net_path, net_layer, _ = self.get_layer_path_from_combobox(self.dlg.dhnx_comboBox_net)
-        bld_path, bld_layer, _ = self.get_layer_path_from_combobox(self.dlg.dhnx_comboBox_buildings)
-        src_path, src_layer, _ = self.get_layer_path_from_combobox(self.dlg.dhnx_comboBox_source)
-        study_area_path, study_area_layer, _ = self.get_layer_path_from_combobox(
-            self.dlg.dhnx_comboBox_study_area
-        )
+    #     heat_attr  = self.dlg.dhnx_comboBox_heat.currentText()
+    #     power_attr = self.dlg.dhnx_comboBox_power.currentText()
+    #     output_path = self.dlg.dhnx_lineEdit_output.text().strip()
 
-        heat_attr  = self.dlg.dhnx_comboBox_heat.currentText()
-        power_attr = self.dlg.dhnx_comboBox_power.currentText()
-        output_path = self.dlg.dhnx_lineEdit_output.text().strip()
+    #     # ── Input validation ─────────────────────────────────────────────────
+    #     if not net_path:
+    #         label_update.emit(self.tr('Please select a Network layer.'), 'orange')
+    #         return
+    #     if not bld_path:
+    #         label_update.emit(self.tr('Please select a Buildings layer.'), 'orange')
+    #         return
+    #     if not src_path:
+    #         label_update.emit(self.tr('Please select a Source / Producer layer.'), 'orange')
+    #         return
+    #     if heat_attr in ('', self.tr('Select Attribute')):
+    #         label_update.emit(self.tr('Please select a Heat Demand attribute.'), 'orange')
+    #         return
+    #     if not output_path:
+    #         label_update.emit(self.tr('Please specify an output file path (.gpkg).'), 'orange')
+    #         return
 
-        # ── Input validation ─────────────────────────────────────────────────
-        if not net_path:
-            label_update.emit(self.tr('Please select a Network layer.'), 'orange')
-            return
-        if not bld_path:
-            label_update.emit(self.tr('Please select a Buildings layer.'), 'orange')
-            return
-        if not src_path:
-            label_update.emit(self.tr('Please select a Source / Producer layer.'), 'orange')
-            return
-        if heat_attr in ('', self.tr('Select Attribute')):
-            label_update.emit(self.tr('Please select a Heat Demand attribute.'), 'orange')
-            return
-        if not output_path:
-            label_update.emit(self.tr('Please specify an output file path (.gpkg).'), 'orange')
-            return
+    #     # ── Build invest options from spin-boxes ─────────────────────────────
+    #     nonconvex = 1 if self.dlg.dhnx_checkBox_nonconvex.isChecked() else 0
+    #     invest_options = {
+    #         'capex_pipes':  self.dlg.dhnx_doubleSpinBox_capex.value(),
+    #         'cap_max':      self.dlg.dhnx_doubleSpinBox_cap_max.value(),
+    #         'l_factor':     self.dlg.dhnx_doubleSpinBox_l_factor.value(),
+    #         'fix_costs':    self.dlg.dhnx_doubleSpinBox_fix_costs.value(),
+    #         'nonconvex':    nonconvex,
+    #     }
+    #     settings = {
+    #         'simultaneity': self.dlg.dhnx_doubleSpinBox_simultaneity.value(),
+    #         'solver':       'highs',
+    #     }
 
-        # ── Build invest options from spin-boxes ─────────────────────────────
-        nonconvex = 1 if self.dlg.dhnx_checkBox_nonconvex.isChecked() else 0
-        invest_options = {
-            'capex_pipes':  self.dlg.dhnx_doubleSpinBox_capex.value(),
-            'cap_max':      self.dlg.dhnx_doubleSpinBox_cap_max.value(),
-            'l_factor':     self.dlg.dhnx_doubleSpinBox_l_factor.value(),
-            'fix_costs':    self.dlg.dhnx_doubleSpinBox_fix_costs.value(),
-            'nonconvex':    nonconvex,
-        }
-        settings = {
-            'simultaneity': self.dlg.dhnx_doubleSpinBox_simultaneity.value(),
-            'solver':       'highs',
-        }
+        # TODO: add option to select DHNx input file instead of creating new one from layers. In this case, the conversion from F|Heat to DHNx ThermalNetwork would be skipped and the selected file would be used directly as input for the optimisation.
+        # ── Run optimisation ── #
+    #     results_gdf, summary, tnw = run_dhnx_optimisation(
+    #         network_path=net_path,
+    #         buildings_path=bld_path,
+    #         heat_attr=heat_attr,
+    #         power_attr=power_attr if power_attr not in ('', self.tr('Select Attribute')) else None,
+    #         source_path=src_path,
+    #         output_path=output_path,
+    #         settings=settings,
+    #         invest_options=invest_options,
+    #         network_layer=net_layer,
+    #         buildings_layer=bld_layer,
+    #         source_layer=src_layer,
+    #         study_area_path=study_area_path or None,
+    #         study_area_layer=study_area_layer or None,
+    #         progress_update=progress_update,
+    #         label_update=label_update,
+    #     )
 
-        # ── Run optimisation ─────────────────────────────────────────────────
-        results_gdf, summary, tnw = run_dhnx_optimisation(
-            network_path=net_path,
-            buildings_path=bld_path,
-            heat_attr=heat_attr,
-            power_attr=power_attr if power_attr not in ('', self.tr('Select Attribute')) else None,
-            source_path=src_path,
-            output_path=output_path,
-            settings=settings,
-            invest_options=invest_options,
-            network_layer=net_layer,
-            buildings_layer=bld_layer,
-            source_layer=src_layer,
-            study_area_path=study_area_path or None,
-            study_area_layer=study_area_layer or None,
-            progress_update=progress_update,
-            label_update=label_update,
-        )
+    #     # ── Store for post-processing in main thread ──────────────────────────
+    #     self.dhnx_results_gdf  = results_gdf
+    #     self.dhnx_summary      = summary
+    #     self.dhnx_output_path  = output_path
+    #     self.dhnx_status       = 'complete'
 
-        # ── Store for post-processing in main thread ──────────────────────────
-        self.dhnx_results_gdf  = results_gdf
-        self.dhnx_summary      = summary
-        self.dhnx_output_path  = output_path
-        self.dhnx_status       = 'complete'
+    # def start_dhnx_optimisation(self):
+    #     '''
+    #     Launch the DHNx investment optimisation in a background thread.
+    #     '''
+    #     if self.worker_running:
+    #         QMessageBox.warning(
+    #             self.dlg,
+    #             self.tr('Warning'),
+    #             self.tr('A process is already running. Please wait for completion.'),
+    #         )
+    #         return
 
-    def start_dhnx_optimisation(self):
-        '''
-        Launch the DHNx investment optimisation in a background thread.
-        '''
-        if self.worker_running:
-            QMessageBox.warning(
-                self.dlg,
-                self.tr('Warning'),
-                self.tr('A process is already running. Please wait for completion.'),
-            )
-            return
+    #     gui_elements = {
+    #         'progressBar': self.dlg.dhnx_progressBar,
+    #         'label':       self.dlg.dhnx_label_feedback,
+    #     }
 
-        gui_elements = {
-            'progressBar': self.dlg.dhnx_progressBar,
-            'label':       self.dlg.dhnx_label_feedback,
-        }
+    #     def on_task_finished():
+    #         self.worker_running = False
 
-        def on_task_finished():
-            self.worker_running = False
+    #         if getattr(self, 'dhnx_status', 0) == 'complete':
+    #             summary = self.dhnx_summary
 
-            if getattr(self, 'dhnx_status', 0) == 'complete':
-                summary = self.dhnx_summary
+    #             # ── Load invested pipes layer into QGIS ───────────────────
+    #             self.add_shapefile_to_project(
+    #                 self.dhnx_output_path,
+    #                 style=None,
+    #                 group_name=self.tr('Net'),
+    #             )
 
-                # ── Load invested pipes layer into QGIS ───────────────────
-                self.add_shapefile_to_project(
-                    self.dhnx_output_path,
-                    style=None,
-                    group_name=self.tr('Net'),
-                )
+    #             # ── Update progress bar and show summary ──────────────────
+    #             self.dlg.dhnx_progressBar.setValue(100)
+    #             msg = self.tr(
+    #                 'Completed! Invested {n} of {total} pipes | '
+    #                 'Capacity: {cap:.1f} kW | '
+    #                 'Total cost: {cost:.0f} € | '
+    #                 'Solver objective: {obj:.2f}'
+    #             ).format(
+    #                 n=summary.get('n_invested_pipes', '?'),
+    #                 total=summary.get('n_total_pipes', '?'),
+    #                 cap=summary.get('total_capacity_kw', 0),
+    #                 cost=summary.get('total_invest_cost', 0),
+    #                 obj=summary.get('objective', float('nan')),
+    #             )
+    #             self.dlg.dhnx_label_feedback.setStyleSheet('color: rgb(0, 255, 0)')
+    #             self.dlg.dhnx_label_feedback.setText(msg)
+    #             self.dlg.dhnx_label_feedback.repaint()
 
-                # ── Update progress bar and show summary ──────────────────
-                self.dlg.dhnx_progressBar.setValue(100)
-                msg = self.tr(
-                    'Completed! Invested {n} of {total} pipes | '
-                    'Capacity: {cap:.1f} kW | '
-                    'Total cost: {cost:.0f} € | '
-                    'Solver objective: {obj:.2f}'
-                ).format(
-                    n=summary.get('n_invested_pipes', '?'),
-                    total=summary.get('n_total_pipes', '?'),
-                    cap=summary.get('total_capacity_kw', 0),
-                    cost=summary.get('total_invest_cost', 0),
-                    obj=summary.get('objective', float('nan')),
-                )
-                self.dlg.dhnx_label_feedback.setStyleSheet('color: rgb(0, 255, 0)')
-                self.dlg.dhnx_label_feedback.setText(msg)
-                self.dlg.dhnx_label_feedback.repaint()
-
-        self.worker_running = True
-        self.run_long_task(self.dhnx_optimisation, gui_elements, on_task_finished)
+    #     self.worker_running = True
+    #     self.run_long_task(self.dhnx_optimisation, gui_elements, on_task_finished)
