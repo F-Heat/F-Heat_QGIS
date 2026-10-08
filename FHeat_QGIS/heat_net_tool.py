@@ -21,7 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QThread, pyqtSignal
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QThread, pyqtSignal, qVersion
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog, QMessageBox
 from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayer, QgsMessageLog, QgsLayerTreeLayer
@@ -52,6 +52,18 @@ try:
     import matplotlib.pyplot as plt
 except:
     pass
+
+
+_QT_MAJOR = int(qVersion().split('.')[0])
+_QMSG_WARNING = QMessageBox.Icon.Warning if _QT_MAJOR >= 6 else QMessageBox.Warning
+
+
+def _union_all(geoseries):
+    """Compat helper for GeoPandas/Shapely versions used by QGIS 3/4."""
+    if hasattr(geoseries, 'union_all'):
+        return geoseries.union_all()
+    return geoseries.unary_union
+
 
 class Worker(QThread):
     '''
@@ -881,7 +893,7 @@ class HeatNetTool:
             # additional buildings are superfluous and only extend the calculation time of the following programs.
             # Therefore, only buildings that are located on the parcels that are available at municipality level are retained
             if parameter == 'city':
-                union = gpd.GeoDataFrame(geometry=[parcels_gdf.unary_union])
+                union = gpd.GeoDataFrame(geometry=[_union_all(parcels_gdf.geometry)])
                 buildings_gdf = gpd.sjoin(buildings_gdf, union, predicate='intersects')
                 streets_gdf = gpd.sjoin(streets_gdf, union, predicate='intersects')
 
@@ -2061,11 +2073,11 @@ class HeatNetTool:
                 import matplotlib.pyplot as plt
             except Exception as e:
                 message_box = QMessageBox()
-                message_box.setIcon(QMessageBox.Warning)
+                message_box.setIcon(_QMSG_WARNING)
                 message_box.setWindowTitle('Import Error')
                 message_box.setText(self.tr('Failed to import a required module: {}').format(str(e)))
                 message_box.setInformativeText(self.tr('Please install all required Python packages by pressing "Install Packages" in the Introduction part of the F|Heat plugin.'))
-                message_box.exec_()
+                message_box.exec()
 
             # check python version
             self.dlg.intro_pushButton_python_version.clicked.connect(lambda: self.check_python_version())
