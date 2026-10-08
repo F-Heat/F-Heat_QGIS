@@ -504,7 +504,13 @@ class LoadProfile:
         '''
         Opens the Excel file using the default application.
         '''
+        import platform
         try:
-            subprocess.Popen(['start', 'excel', self.path], shell=True)
+            if platform.system() == 'Windows':
+                subprocess.Popen(['start', 'excel', self.path], shell=True)
+            elif platform.system() == 'Darwin':
+                subprocess.Popen(['open', self.path])
+            else:
+                subprocess.Popen(['xdg-open', self.path])
         except Exception as e:
             print(f"Fehler beim Öffnen der Excel-Datei: {e}")

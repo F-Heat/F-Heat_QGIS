@@ -354,9 +354,14 @@ class Buildings:
         for index, row_p in self.gdf.iterrows():
             centroid = row_p['centroid']
 
-            # Use spatial index to get the nearest lines to the centroid
-            possible_matches_index = list(sindex.nearest(centroid))
-            possible_matches = streets.iloc[[i[0] for i in possible_matches_index]]
+            # Use spatial index to get nearest lines; API differs across versions.
+            raw_matches = sindex.nearest(centroid)
+            raw_arr = np.asarray(raw_matches)
+            if raw_arr.ndim == 2:
+                tree_indices = raw_arr[1]
+            else:
+                tree_indices = raw_arr
+            possible_matches = streets.iloc[tree_indices]
 
             # Find the line closest to the centroid
             closest_line = possible_matches.geometry.distance(centroid).idxmin()

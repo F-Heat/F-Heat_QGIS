@@ -4,7 +4,9 @@
 
 [general]
 name=F|Heat 
-qgisMinimumVersion=3.3
+qgisMinimumVersion=3.34
+qgisMaximumVersion=4.99
+supportsQt6=True
 description=This plugin provides tools for district heating planning
 about=This plugin provides tools for municipal heat planning. It supports the entire process — from downloading required spatial data (shapefiles) to designing a district heating network and exporting results as a report. The plugin is currently tailored to data sources available in North Rhine-Westphalia (NRW), Germany. Use in other regions may require adapting data formats and sources. Additional Python libraries are required. Please refer to the documentation on ReadTheDocs (linked in the repository) or visit our German homepage for a full installation guide.
 version=0.1.1
