@@ -6,13 +6,21 @@ import geopandas as gpd
 import pandas as pd
 import os
 import shutil
+import tempfile
 from owslib.wfs import WebFeatureService
 from shapely.geometry import Point, Polygon, box
 from shapely.ops import unary_union
 
 # QgsNetworkAccessManager is restricted to the main thread in QGIS 4 / Qt6.
 # These helpers run inside worker threads, so they continue to use urllib.
-    
+
+def open_url(url, timeout=60):
+    '''Opens an http(s) URL; rejects other schemes such as file:/ or ftp:/.'''
+    if not str(url).lower().startswith(('http://', 'https://')):
+        raise ValueError(f'Unsupported URL scheme: {url}')
+    return urllib.request.urlopen(url, timeout=timeout)  # nosec B310 - scheme checked above
+
+
 def file_list_from_URL(url):
     '''lists downloadable files from given URL
 
@@ -30,7 +38,7 @@ def file_list_from_URL(url):
         A list of files found in all entries under 'datasets'.
     '''
     filestring = ''
-    for line in urllib.request.urlopen(url):
+    for line in open_url(url):
         d = line.decode('latin1')
         d = d.strip()
         filestring += d
@@ -56,7 +64,7 @@ def file_list_from_URL_QGIS(url: str):
     list
         A list of files found in all entries under 'datasets'.
     """
-    with urllib.request.urlopen(url) as response:
+    with open_url(url) as response:
         filestring = response.read().decode("latin1").strip()
 
     # In dict umwandeln
@@ -143,11 +151,10 @@ def read_file_from_zip(url, zipfile, file_pattern, file_type='.shp', encoding='u
     - Temporary files are extracted to '/tmp/extracted_zip' and cleaned up after reading.
     - The file type must be specified via the 'file_type' argument, which defaults to '.shp'.
     '''
-    with urllib.request.urlopen(url + zipfile) as response:
+    with open_url(url + zipfile) as response:
         with ZipFile(BytesIO(response.read())) as my_zip_file:
-            # Create a temporary directory
-            temp_dir = '/tmp/extracted_zip'
-            os.makedirs(temp_dir, exist_ok=True)
+            # Create a unique temporary directory
+            temp_dir = tempfile.mkdtemp(prefix='extracted_zip_')
 
             # Extract the entire Zip archive to the temporary directory
             my_zip_file.extractall(temp_dir)
@@ -176,12 +183,11 @@ def read_file_from_zip_QGIS(url, zipfile, file_pattern, file_type='.shp', encodi
     """
     Reads a file (GeoDataFrame for shapefiles or DataFrame for CSV) from a downloadable zip file.
     """
-    with urllib.request.urlopen(url + zipfile) as response:
+    with open_url(url + zipfile) as response:
         zip_bytes = response.read()
 
-    # Extract zip to temp folder
-    temp_dir = '/tmp/extracted_zip'
-    os.makedirs(temp_dir, exist_ok=True)
+    # Extract zip to a unique temp folder
+    temp_dir = tempfile.mkdtemp(prefix='extracted_zip_')
 
     try:
         with ZipFile(BytesIO(zip_bytes)) as my_zip_file:
