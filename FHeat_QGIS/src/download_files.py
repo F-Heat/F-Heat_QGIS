@@ -9,9 +9,9 @@ import shutil
 from owslib.wfs import WebFeatureService
 from shapely.geometry import Point, Polygon, box
 from shapely.ops import unary_union
-from qgis.PyQt.QtNetwork import QNetworkRequest
-from qgis.core import QgsNetworkAccessManager
-from qgis.PyQt.QtCore import QEventLoop, QUrl
+
+# QgsNetworkAccessManager is restricted to the main thread in QGIS 4 / Qt6.
+# These helpers run inside worker threads, so they continue to use urllib.
     
 def file_list_from_URL(url):
     '''lists downloadable files from given URL
@@ -44,7 +44,7 @@ def file_list_from_URL(url):
 
 def file_list_from_URL_QGIS(url: str):
     """
-    Lists downloadable files from given URL using QgsNetworkAccessManager.
+    Lists downloadable files from the given URL.
 
     Parameters
     ----------
@@ -56,26 +56,8 @@ def file_list_from_URL_QGIS(url: str):
     list
         A list of files found in all entries under 'datasets'.
     """
-    nam = QgsNetworkAccessManager.instance()
-    request = QNetworkRequest(QUrl(url))
-
-    # Start the request
-    reply = nam.get(request)
-
-    # Event loop to wait for the reply (blocking)
-    loop = QEventLoop()
-    reply.finished.connect(loop.quit)
-    loop.exec_()
-
-    if reply.error():
-        raise Exception(f"Network error: {reply.errorString()}")
-
-    # Get data and decode
-    data_bytes = reply.readAll()
-    reply.deleteLater()
-
-    # Deine ursprüngliche latin1-Dekodierung
-    filestring = bytes(data_bytes).decode("latin1").strip()
+    with urllib.request.urlopen(url) as response:
+        filestring = response.read().decode("latin1").strip()
 
     # In dict umwandeln
     data_dict = ast.literal_eval(filestring)
@@ -192,56 +174,40 @@ def read_file_from_zip(url, zipfile, file_pattern, file_type='.shp', encoding='u
 
 def read_file_from_zip_QGIS(url, zipfile, file_pattern, file_type='.shp', encoding='utf-8', delimiter=';'):
     """
-    Reads a file (GeoDataFrame for shapefiles or DataFrame for CSV) from a downloadable zip file
-    using QgsNetworkAccessManager (QGIS compatible).
+    Reads a file (GeoDataFrame for shapefiles or DataFrame for CSV) from a downloadable zip file.
     """
-
-    # Download file 
-    nam = QgsNetworkAccessManager.instance()
-    request = QNetworkRequest(QUrl(url + zipfile))
-    reply = nam.get(request)
-
-    loop = QEventLoop()
-    reply.finished.connect(loop.quit)
-    loop.exec_()
-
-    if reply.error():
-        raise Exception(f"Network error: {reply.errorString()}")
-
-    zip_bytes = reply.readAll()
-    reply.deleteLater()
+    with urllib.request.urlopen(url + zipfile) as response:
+        zip_bytes = response.read()
 
     # Extract zip to temp folder
     temp_dir = '/tmp/extracted_zip'
     os.makedirs(temp_dir, exist_ok=True)
 
-    with ZipFile(BytesIO(bytes(zip_bytes))) as my_zip_file:
-        my_zip_file.extractall(temp_dir)
+    try:
+        with ZipFile(BytesIO(zip_bytes)) as my_zip_file:
+            my_zip_file.extractall(temp_dir)
 
-        # search matching file
-        file_list = my_zip_file.namelist()
-        matching_files = [
-            file for file in file_list
-            if file_pattern in file and file.endswith(file_type)
-        ]
+            # search matching file
+            file_list = my_zip_file.namelist()
+            matching_files = [
+                file for file in file_list
+                if file_pattern in file and file.endswith(file_type)
+            ]
 
-        if not matching_files:
-            shutil.rmtree(temp_dir)
-            raise FileNotFoundError(f"No file matching {file_pattern}{file_type} found in archive.")
+            if not matching_files:
+                raise FileNotFoundError(f"No file matching {file_pattern}{file_type} found in archive.")
 
-        file = matching_files[0]
+            file = matching_files[0]
 
-        # Read file depending on type
-        if file_type in ['.shp', '.gpkg']:
-            data = gpd.read_file(os.path.join(temp_dir, file), encoding=encoding)
-        elif file_type == '.csv':
-            data = pd.read_csv(os.path.join(temp_dir, file), encoding=encoding, delimiter=delimiter)
-        else:
-            shutil.rmtree(temp_dir)
-            raise ValueError(f"Unsupported file type: {file_type}")
-
-    # Cleanup
-    shutil.rmtree(temp_dir)
+            # Read file depending on type
+            if file_type in ['.shp', '.gpkg']:
+                data = gpd.read_file(os.path.join(temp_dir, file), encoding=encoding)
+            elif file_type == '.csv':
+                data = pd.read_csv(os.path.join(temp_dir, file), encoding=encoding, delimiter=delimiter)
+            else:
+                raise ValueError(f"Unsupported file type: {file_type}")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
     return data
 
 def filter_df(name, dataframe, parameter):

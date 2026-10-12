@@ -530,7 +530,7 @@ class Buildings_adj():
             'Vlh [h]': old_df['Vlh'],
             'Lastprofil': old_df['Lastprofil'],
             'Alter_LANUV': old_df['age_LANUV'],
-            'Alter_Flurstueck': pd.to_datetime(old_df['validFrom'], errors='coerce').dt.year,   
+            'Alter_Flurstueck': old_df['validFrom'].apply(self.extract_year),
             'BAK nach Flurstueck': old_df['BAK'],
             'Spez_WB [kWh/a*m²]': old_df['Spez_Waermebedarf'],
             'WB [kWh/a]': old_df['Waermebedarf'],
