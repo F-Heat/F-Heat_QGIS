@@ -504,10 +504,10 @@ class LoadProfile:
         import platform
         try:
             if platform.system() == 'Windows':
-                os.startfile(self.path)
+                os.startfile(self.path)  # nosec B606 - opens the user-selected result file
             elif platform.system() == 'Darwin':
-                subprocess.Popen(['open', self.path])
+                subprocess.Popen(['open', self.path])  # nosec B603 B607 - system opener, no shell
             else:
-                subprocess.Popen(['xdg-open', self.path])
+                subprocess.Popen(['xdg-open', self.path])  # nosec B603 B607 - system opener, no shell
         except Exception as e:
             print(f"Fehler beim Öffnen der Excel-Datei: {e}")

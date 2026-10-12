@@ -85,7 +85,7 @@ def create_venv(progress_callback: Optional[Callable] = None) -> Tuple[bool, str
     _log(f"Erstelle venv: {VENV_DIR}")
     if progress_callback:
         progress_callback(5, "Erstelle virtuelle Umgebung...")
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 - fixed argument list, no shell, no user input
         [_find_python(), "-m", "venv", VENV_DIR, "--without-pip"],
         capture_output=True, text=True,
         env=_clean_env(), **_subprocess_kwargs()
@@ -96,7 +96,7 @@ def create_venv(progress_callback: Optional[Callable] = None) -> Tuple[bool, str
     if progress_callback:
         progress_callback(10, "Bootstrap pip...")
     python = get_venv_python()
-    pip_result = subprocess.run(
+    pip_result = subprocess.run(  # nosec B603 - fixed argument list, no shell, no user input
         [python, "-m", "ensurepip", "--upgrade"],
         capture_output=True, text=True,
         env=_clean_env(), **_subprocess_kwargs()
@@ -105,7 +105,7 @@ def create_venv(progress_callback: Optional[Callable] = None) -> Tuple[bool, str
         # ensurepip might not be available; fall back to downloading get-pip.py
         _log(f"ensurepip fehlgeschlagen: {pip_result.stderr}", Qgis.Warning)
     # Upgrade pip to latest
-    subprocess.run(
+    subprocess.run(  # nosec B603 - fixed argument list, no shell, no user input
         [python, "-m", "pip", "install", "--upgrade", "pip"],
         capture_output=True, text=True,
         env=_clean_env(), **_subprocess_kwargs()
@@ -121,7 +121,7 @@ def install_packages(progress_callback: Optional[Callable] = None) -> Tuple[bool
         if progress_callback:
             pct = 20 + int((i / total) * 75)
             progress_callback(pct, f"Installiere {pkg}...")
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 - fixed argument list, no shell, no user input
             [python, "-m", "pip", "install", pkg],
             capture_output=True, text=True,
             env=env, **_subprocess_kwargs()
@@ -141,7 +141,7 @@ def packages_installed() -> bool:
         return False
     python = get_venv_python()
     check = "; ".join(f"import importlib; importlib.import_module('{p.lower().replace('-','_')}')" for p in REQUIRED_PACKAGES)
-    result = subprocess.run(
+    result = subprocess.run(  # nosec B603 - fixed argument list, no shell, no user input
         [python, "-c", check],
         capture_output=True, text=True,
         env=_clean_env(), **_subprocess_kwargs()
