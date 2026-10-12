@@ -25,7 +25,7 @@ REQUIRED_PACKAGES = [
 ]
 
 
-def _log(msg: str, level=Qgis.Info):
+def _log(msg: str, level=Qgis.MessageLevel.Info):
     QgsMessageLog.logMessage(msg, "F|Heat", level=level)
 
 
@@ -103,7 +103,7 @@ def create_venv(progress_callback: Optional[Callable] = None) -> Tuple[bool, str
     )
     if pip_result.returncode != 0:
         # ensurepip might not be available; fall back to downloading get-pip.py
-        _log(f"ensurepip fehlgeschlagen: {pip_result.stderr}", Qgis.Warning)
+        _log(f"ensurepip fehlgeschlagen: {pip_result.stderr}", Qgis.MessageLevel.Warning)
     # Upgrade pip to latest
     subprocess.run(  # nosec B603 - fixed argument list, no shell, no user input
         [python, "-m", "pip", "install", "--upgrade", "pip"],
@@ -128,7 +128,7 @@ def install_packages(progress_callback: Optional[Callable] = None) -> Tuple[bool
         )
         if result.returncode != 0:
             err = result.stderr or result.stdout
-            _log(f"Fehler bei {pkg}: {err}", Qgis.Warning)
+            _log(f"Fehler bei {pkg}: {err}", Qgis.MessageLevel.Warning)
             return False, f"Installation von '{pkg}' fehlgeschlagen: {err}"
     if progress_callback:
         progress_callback(100, "Installation abgeschlossen")
