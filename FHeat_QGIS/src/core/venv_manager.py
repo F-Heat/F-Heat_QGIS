@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import subprocess
 from typing import Optional, Callable, Tuple
@@ -14,9 +15,9 @@ VENV_DIR = os.path.join(PLUGIN_DIR, f"venv_{PYTHON_VERSION}")
 REQUIRED_PACKAGES = [
     "geopandas",
     "OWSLib",
-    "pandas",
+    "pandas~=2.3.0",  # pandas 3.x is not supported yet (stricter dtypes)
     "fiona",
-    "numpy",
+    "numpy==1.26.4",
     "networkx",
     "matplotlib",
     "openpyxl",
@@ -140,7 +141,10 @@ def packages_installed() -> bool:
     if not venv_exists():
         return False
     python = get_venv_python()
-    check = "; ".join(f"import importlib; importlib.import_module('{p.lower().replace('-','_')}')" for p in REQUIRED_PACKAGES)
+    names = [re.split(r'[=<>~!]', p)[0].lower().replace('-', '_') for p in REQUIRED_PACKAGES]
+    check = "; ".join(f"import importlib; importlib.import_module('{n}')" for n in names)
+    # An existing venv with pandas 3.x must be reinstalled with the pinned 2.x version
+    check += "; import pandas; assert int(pandas.__version__.split('.')[0]) < 3"
     result = subprocess.run(  # nosec B603 - fixed argument list, no shell, no user input
         [python, "-c", check],
         capture_output=True, text=True,
