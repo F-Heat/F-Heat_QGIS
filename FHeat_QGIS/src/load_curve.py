@@ -2,7 +2,6 @@ import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
 import re
-import urllib.request
 from io import StringIO
 from io import BytesIO
 from zipfile import ZipFile
@@ -10,7 +9,9 @@ import demandlib.bdew as bdew
 import datetime
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
+import os
 import subprocess
+from .download_files import open_url
 from openpyxl.drawing.image import Image
 
 
@@ -59,7 +60,7 @@ class Temperature:
         # open file from url
         # replace the whitespaces by ; - take attention to column "Stationsname" as these names may be separated by whitespace but should not match to different columns
         filestring = ''
-        for line in urllib.request.urlopen(self.url_all):
+        for line in open_url(self.url_all):
             s = line.decode('latin1')
             if s[0] == 'S':
                 # this is the first line
@@ -167,7 +168,7 @@ class Temperature:
             endyear = end_date[:4]
         zipfile = f'stundenwerte_TU_{station_id}_{start_date}_{end_date}_hist.zip'
         file = f'produkt_tu_stunde_{start_date}_{end_date}_{station_id}.txt'
-        url = urllib.request.urlopen(url+zipfile)
+        url = open_url(url+zipfile)
 
         with ZipFile(BytesIO(url.read())) as my_zip_file:
             data = pd.read_csv(
@@ -469,11 +470,7 @@ class LoadProfile:
             max_length = 0
             column = col[0].column_letter # Get the column name
             for cell in col:
-                try: # Necessary to avoid error on empty cells
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
-                except:
-                    pass
+                max_length = max(max_length, len(str(cell.value)))
             adjusted_width = (max_length+1)
             ws.column_dimensions[column].width = adjusted_width
         wb.save(filename)
@@ -507,7 +504,7 @@ class LoadProfile:
         import platform
         try:
             if platform.system() == 'Windows':
-                subprocess.Popen(['start', 'excel', self.path], shell=True)
+                os.startfile(self.path)
             elif platform.system() == 'Darwin':
                 subprocess.Popen(['open', self.path])
             else:

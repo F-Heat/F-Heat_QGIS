@@ -51,8 +51,9 @@ try:
     from workalendar.europe import Germany
     from matplotlib.figure import Figure
     import matplotlib.pyplot as plt
-except:
-    pass
+except Exception as e:
+    # Heavy dependencies live in the plugin venv and may not be installed yet
+    print(f'F-Heat: optional imports not available yet: {e}')
 
 
 _QT_MAJOR = int(qVersion().split('.')[0])
@@ -1356,16 +1357,12 @@ class HeatNetTool:
             buildings.gdf = gpd.sjoin(buildings.gdf, polygon, how="inner", predicate="within")
 
         # Drop unwanted routes if existing
-        try:
+        if 'Moegliche_Route' in streets.gdf.columns:
             streets.gdf = streets.gdf[streets.gdf['Moegliche_Route']==1]
-        except:
-            pass
 
         # Drop unconnected buildings if existing
-        try:
+        if 'Anschluss' in buildings.gdf.columns:
             buildings.gdf = buildings.gdf[buildings.gdf['Anschluss']==1]
-        except:
-            pass
 
         
         progress_update.emit(5) # update progressBar

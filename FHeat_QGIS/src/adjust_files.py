@@ -186,7 +186,7 @@ class Buildings_adj():
 
         try:
             buildings.drop(columns=['Funktion'], inplace=True)
-        except:
+        except KeyError:
             buildings.drop(columns=['Funktion_y'], inplace=True)
 
         # EFH and MFH share the same ALKIS-function 1010
@@ -497,10 +497,9 @@ class Buildings_adj():
             )
         )
         # try to delete unwanted columns
-        try:
-            merged_df.drop(columns=['Baualtersklasse', 'Waerme_MFH kWh/m²·a', 'Waerme_EFH kWh/m²·a', 'Funktion', 'WVBRpEBF', 'GFK_last_four'], inplace=True)
-        except:
-            pass
+        unwanted_cols = ['Baualtersklasse', 'Waerme_MFH kWh/m²·a', 'Waerme_EFH kWh/m²·a', 'Funktion', 'WVBRpEBF', 'GFK_last_four']
+        if all(c in merged_df.columns for c in unwanted_cols):
+            merged_df.drop(columns=unwanted_cols, inplace=True)
         # calculate 'Waermebedarf'
         merged_df['Waermebedarf'] = merged_df['NF'] * merged_df['Spez_Waermebedarf']
         self.gdf = merged_df
@@ -636,7 +635,7 @@ def spatial_join(shape1, shape2, attributes):
     for attr in attributes:
         try:
             shape1[attr] = max_intersection[attr]
-        except:
+        except KeyError:
             shape1[attr] = max_intersection[(attr+'_left')]
             print(f'{attr} got updated during spatial join')
     return shape1

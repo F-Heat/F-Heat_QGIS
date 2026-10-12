@@ -317,7 +317,7 @@ class Buildings:
         # Filter buildings with heat consumption
         try:
             buildings_wvbr = self.buildings_all[self.buildings_all[heat_att]>0] 
-        except:
+        except (KeyError, TypeError):
             print('Check heat attribute!')
 
         self.gdf = buildings_wvbr
@@ -1021,11 +1021,7 @@ class Result:
             max_length = 0
             column = col[0].column_letter # Get the column name
             for cell in col:
-                try: # Necessary to avoid error on empty cells
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
-                except:
-                    pass
+                max_length = max(max_length, len(str(cell.value)))  # str() also handles empty cells
             adjusted_width = (max_length+1)
             ws.column_dimensions[column].width = adjusted_width
         wb.save(self.path)
