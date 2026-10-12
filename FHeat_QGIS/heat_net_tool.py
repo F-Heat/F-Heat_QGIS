@@ -2038,8 +2038,8 @@ class HeatNetTool:
         try:
             from .src.core.venv_manager import ensure_packages_available
             ensure_packages_available()
-        except Exception:
-            pass
+        except Exception as e:
+            QgsMessageLog.logMessage(f'venv packages not available: {e}', 'F|Heat')
 
         # Project path
         project_file_path = QgsProject.instance().fileName()
