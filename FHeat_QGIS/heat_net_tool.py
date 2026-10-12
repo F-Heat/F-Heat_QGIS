@@ -56,8 +56,8 @@ except Exception as e:
     print(f'F-Heat: optional imports not available yet: {e}')
 
 
-_QT_MAJOR = int(qVersion().split('.')[0])
-_QMSG_WARNING = QMessageBox.Icon.Warning if _QT_MAJOR >= 6 else QMessageBox.Warning
+# Scoped enum works in both Qt5 (PyQt5) and Qt6
+_QMSG_WARNING = QMessageBox.Icon.Warning
 
 
 def _union_all(geoseries):
