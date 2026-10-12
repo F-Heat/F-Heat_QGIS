@@ -9,7 +9,7 @@ qgisMaximumVersion=4.99
 supportsQt6=True
 description=This plugin provides tools for district heating planning
 about=This plugin provides tools for municipal heat planning. It supports the entire process — from downloading required spatial data (shapefiles) to designing a district heating network and exporting results as a report. The plugin is currently tailored to data sources available in North Rhine-Westphalia (NRW), Germany. Use in other regions may require adapting data formats and sources. Additional Python libraries are required. Please refer to the documentation on ReadTheDocs (linked in the repository) or visit our German homepage for a full installation guide.
-version=0.1.1
+version=0.2.0
 author=FH Münster University of Applied Sciences
 email=FHeat@fh-muenster.de
 tracker=https://github.com/F-Heat/F-Heat_QGIS/issues
@@ -20,7 +20,13 @@ repository=https://github.com/F-Heat/F-Heat_QGIS/tree/main/FHeat_QGIS
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-changelog=0.1.1 2025-09-23:
+changelog=0.2.0 2026-10-12:
+	*Added: Virtual environment management (src/core/venv_manager.py, subprocess_utils.py); required packages are installed into an isolated plugin venv
+	*Added: Compatibility with QGIS 3.34.11 - 4.0.0 (Qt5 and Qt6)
+	*Changed: The GUI is now a dockable panel in the QGIS main window; the toolbar icon shows/hides it
+	*Changed: DHNx integration is disabled for now (planned as optional module)
+	*Fixed: Security findings from Bandit: unique temporary directories for zip extraction, downloads restricted to http(s) with timeout, Excel file opened via os.startfile, no more bare except/pass blocks
+	0.1.1 2025-09-23:
 	*Fixed: Worker flag (self.worker_running) is now reset at the start of on_task_finished to prevent tasks from remaining locked if an error occurs.
 	*Changed: Updated download URL for census data and read the docs link
 	*Added: New download functions based on QgsNetworkAccessManager in download_files.py
