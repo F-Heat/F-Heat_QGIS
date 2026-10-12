@@ -21,9 +21,9 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QThread, pyqtSignal, qVersion
+from qgis.PyQt.QtCore import Qt, QSettings, QTranslator, QCoreApplication, QThread, pyqtSignal, qVersion
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QFileDialog, QMessageBox
+from qgis.PyQt.QtWidgets import QAction, QFileDialog, QMessageBox, QDockWidget, QScrollArea
 from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayer, QgsMessageLog, QgsLayerTreeLayer
 
 # Initialize Qt resources from file resources.py
@@ -277,6 +277,11 @@ class HeatNetTool:
                 self.tr(u'&F|Heat '),
                 action)
             self.iface.removeToolBarIcon(action)
+        dock = getattr(self, 'dock', None)
+        if dock is not None:
+            self.iface.removeDockWidget(dock)
+            dock.deleteLater()
+            self.dock = None
 
     def check_python_version(self):
         '''Checks QGIS python version'''
@@ -2046,6 +2051,17 @@ class HeatNetTool:
             self.first_start = False
             self.dlg = HeatNetToolDialog()
 
+            # Embed the GUI as a dockable panel in the QGIS main window
+            # (self.dlg stays a QDialog, so all existing self.dlg.* code keeps working)
+            self.dlg.setWindowFlags(Qt.WindowType.Widget)
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setWidget(self.dlg)
+            self.dock = QDockWidget(self.tr('F|Heat'), self.iface.mainWindow())
+            self.dock.setObjectName('FHeatDockWidget')
+            self.dock.setWidget(scroll)
+            self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.dock)
+
             # check modules
             try:
                 import pandas as pd
@@ -2181,8 +2197,12 @@ class HeatNetTool:
         # self.dlg.dhnx_comboBox_buildings.currentIndexChanged.connect(
         #     lambda: self.load_attributes('dhnx_comboBox_buildings', 'dhnx_comboBox_power'))
 
-        # show the dialog
-        self.dlg.show()
+        # show the dock panel (toolbar icon toggles it)
+        if self.dock.isVisible():
+            self.dock.hide()
+        else:
+            self.dock.show()
+            self.dock.raise_()
 
     # -------------------------------------------------------------------------
     # DHNx Optimisation
