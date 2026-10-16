@@ -1,8 +1,8 @@
 geopandas
 OWSLib
-pandas~=2.3.0
+pandas
 fiona
-numpy==1.26.4
+numpy
 networkx
 matplotlib
 openpyxl
