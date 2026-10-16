@@ -6,10 +6,15 @@ import subprocess
 def get_clean_env_for_venv() -> dict:
     """Saubere Umgebung für venv-Subprozesse (kein QGIS-Leak)."""
     env = os.environ.copy()
-    for var in ['PYTHONPATH', 'PYTHONHOME', 'VIRTUAL_ENV',
+    # PYTHONEXECUTABLE (set by OSGeo4W/QGIS) makes the venv python run as the
+    # base interpreter, so pip would install outside the venv
+    for var in ['PYTHONPATH', 'PYTHONHOME', 'PYTHONEXECUTABLE', 'VIRTUAL_ENV',
                 'QGIS_PREFIX_PATH', 'QGIS_PLUGINPATH']:
         env.pop(var, None)
     env["PYTHONIOENCODING"] = "utf-8"
+    # The venv uses --system-site-packages, which would also include the user
+    # site-packages (%APPDATA%\Python) - pip must only see QGIS + venv packages
+    env["PYTHONNOUSERSITE"] = "1"
     return env
 
 

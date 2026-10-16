@@ -31,6 +31,14 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
-    #
+    # Put the plugin venv on sys.path before heat_net_tool imports pandas/geopandas,
+    # otherwise packages from QGIS or the user site-packages are used instead
+    try:
+        from .src.core.venv_manager import ensure_packages_available
+        ensure_packages_available()
+    except Exception as e:
+        from qgis.core import QgsMessageLog
+        QgsMessageLog.logMessage(f'venv packages not available: {e}', 'F|Heat')
+
     from .heat_net_tool import HeatNetTool
     return HeatNetTool(iface)

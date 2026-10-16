@@ -7,7 +7,7 @@ from io import BytesIO
 from zipfile import ZipFile
 import demandlib.bdew as bdew
 import datetime
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from openpyxl import load_workbook
 import os
 import subprocess
@@ -426,20 +426,17 @@ class LoadProfile:
         filename : str, optional
             The filename to save the plot (default is '../Lastprofil.png').
         '''
-        plt.figure()  # new figure
+        # Figure without pyplot: no GUI backend, safe in the worker thread
+        fig = Figure(figsize=figsize)
+        ax = fig.add_subplot()
         for i in range(len(column_names)):
-            plt.bar(range(len(dataframe)), dataframe[column_names[i]], color=colors[i], label=column_names[i], width =1)
-            
-        # Plot size
-        fig = plt.gcf()
-        fig.set_size_inches(figsize)
+            ax.bar(range(len(dataframe)), dataframe[column_names[i]], color=colors[i], label=column_names[i], width =1)
 
-        plt.xlabel('Zeit [h]')
-        plt.ylabel(ylabel)
-        plt.title(title)
-        plt.legend()
-        plt.savefig(filename, bbox_inches='tight')
-        plt.close(fig)
+        ax.set_xlabel('Zeit [h]')
+        ax.set_ylabel(ylabel)
+        ax.set_title(title)
+        ax.legend()
+        fig.savefig(filename, bbox_inches='tight')
 
     def save_in_excel(self, df, col = 0, index_bool=False, sheet_option ='replace', sheet = 'Lastprofil'):
         '''
